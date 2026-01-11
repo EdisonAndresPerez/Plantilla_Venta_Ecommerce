@@ -2,13 +2,22 @@ import { CustomjumAction } from "./CustomjumAction";
 import { CustomjumStats } from "./CustomjumStats";
 
 interface Props {
-  //titulo de promocion
   badgeText?: string;
-  title: string;
-  subtitle: string;
+  title: {
+    primary: string;
+    secondary: string;
+  };
+  subtitle: {
+    intro: string;
+    highlights: {
+      text1: string;
+      text2: string;
+      text3: string;
+    };
+  };
 }
 
-export const CustomJumbotron = () => {
+export const CustomJumbotron = ({ badgeText, title, subtitle }: Props) => {
   return (
     <>
       {/* Hero Section */}
@@ -20,25 +29,29 @@ export const CustomJumbotron = () => {
 
         <div className="container mx-auto text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6 animate-float">
-            Nueva Colección 2026
+            {badgeText}
           </div>
 
           <h1 className="text-5xl lg:text-8xl font-bold tracking-tight mb-6">
-            <span className="text-gradient">Estilo</span>{" "}
-            <span className="text-gradient-secondary">Vibrante</span>
+            <span className="text-gradient">{title.primary}</span>{" "}
+            <span className="text-gradient-secondary">{title.secondary}</span>
           </h1>
 
           <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
-            Descubre ropa que expresa tu personalidad.
-            <span className="text-primary font-medium"> Colores vivos</span>,
+            {subtitle.intro}
+            <span className="text-primary font-medium">
+              {" "}
+              {subtitle.highlights.text1}
+            </span>
+            ,
             <span className="text-purple-500 font-semibold">
               {" "}
-              diseños únicos
+              {subtitle.highlights.text2}
             </span>{" "}
             y
             <span className="text-pink-500 font-semibold">
               {" "}
-              calidad premium
+              {subtitle.highlights.text3}
             </span>
             .
           </p>
