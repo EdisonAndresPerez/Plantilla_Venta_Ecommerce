@@ -1,3 +1,5 @@
+import { lazy } from "react";
+
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { ShopLayout } from "./shop_front/layouts/ShopLayout";
 import { HomePage } from "./shop_front/pages/home/HomePage";
@@ -5,10 +7,17 @@ import { ProductPage } from "./shop_front/pages/product/ProductPage";
 import { GenderPage } from "./shop_front/pages/gender/GenderPage";
 import { LoginPage } from "./auth/pages/login/LoginPage";
 import { RegisterPage } from "./auth/pages/register/RegisterPage";
-import { AuthLayout } from "./auth/layouts/AuthLayout";
-import { AdminLayout } from "./admin/layouts/AdminLayout";
+
+
 import { AdminProductPage } from "./admin/pages/product/AdminProductPage";
 import { AdminProductsPage } from "./admin/pages/products/AdminProductsPage";
+
+
+
+const  AuthLayoutLazy = lazy(() => import('./auth/layouts/AuthLayout'));
+const AdminLayoutLazy = lazy(() => import('./admin/layouts/AdminLayout'));
+
+
 
 export const AppRouter = createBrowserRouter([
   //rutas publicas
@@ -35,7 +44,7 @@ export const AppRouter = createBrowserRouter([
   //Rutas Autenticacion
   {
     path: "/auth",
-    element: <AuthLayout />,
+    element: <AuthLayoutLazy />,
     children: [
       {
         index: true,
@@ -55,7 +64,7 @@ export const AppRouter = createBrowserRouter([
   //rutas administrativas
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: <AdminLayoutLazy />,
     children: [
       {
         path: "products",
