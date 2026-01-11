@@ -1,11 +1,6 @@
-import React from 'react'
 
-const GenderPage = () => {
+export const GenderPage = () => {
   return (
-    <div>
-      
-    </div>
+    <div>GenderPage</div>
   )
 }
-
-export default GenderPage

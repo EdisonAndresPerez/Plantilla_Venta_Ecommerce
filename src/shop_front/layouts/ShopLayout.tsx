@@ -1,11 +1,7 @@
 import React from 'react'
 
-const ShopLayout = () => {
+export const ShopLayout = () => {
   return (
-    <div>
-      
-    </div>
+    <div>ShopLayout</div>
   )
 }
-
-export default ShopLayout

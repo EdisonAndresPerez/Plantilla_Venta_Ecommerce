@@ -1,9 +1,8 @@
-import React from 'react'
 
 const TesloShopApp = () => {
   return (
     <div>
-      <h1>aaaaa</h1>
+      <h1>TesloShop</h1>
     </div>
   )
 }
