@@ -1,6 +1,3 @@
-import { CustomjumAction } from "./CustomjumAction";
-import { CustomjumStats } from "./CustomjumStats";
-
 interface Props {
   badgeText?: string;
   title: {
@@ -55,11 +52,6 @@ export const CustomJumbotron = ({ badgeText, title, subtitle }: Props) => {
             </span>
             .
           </p>
-
-          {/*  Section Button */}
-          <CustomjumAction />
-          {/* Stats */}
-          <CustomjumStats />
         </div>
       </section>
     </>

@@ -1,12 +1,10 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import { AppRouter } from './app.router'
-import { RouterProvider } from "react-router-dom";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import TesloShopApp from "./TesloShopApp";
 
-
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={AppRouter} />
-  </StrictMode>,
-)
+    <TesloShopApp />
+  </StrictMode>
+);
