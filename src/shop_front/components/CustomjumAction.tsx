@@ -23,7 +23,7 @@ export const CustomjumAction = ({
         <Button
           onClick={onClickExpolore}
           size="lg"
-          className="button-gradient rounded-full px-10 h-14 text-lg font-semibold gap-2"
+          className="button-gradient rounded-full px-10 h-14 text-lg font-semibold gap-2 cursor-pointer  "
         >
           <Zap className="h-5 w-5" />
           {titleButtonExplore}
@@ -32,7 +32,7 @@ export const CustomjumAction = ({
           size="lg"
           onClick={onClickTrends}
           variant="outline"
-          className="rounded-full px-10 h-14 text-lg font-semibold border-2 hover:bg-secondary hover:text-white hover:border-secondary transition-all"
+          className="rounded-full px-10 h-14 text-lg font-semibold border-2 hover:bg-primary hover:text-white hover:border-primary transition-all  cursor-pointer"
         >
           <TrendingUp className="h-5 w-5 mr-2" />
           {titleButtonTrends}
