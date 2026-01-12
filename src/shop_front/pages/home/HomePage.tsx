@@ -23,7 +23,7 @@ export const HomePage = () => {
   return (
     <div className="min-h-screen">
       <CustomJumbotron
-        badgeText="Nueva Colección 2024"
+        badgeText="Nueva Colección 2026"
         title={{
           primary: "Estilo",
           secondary: "Vibrante",
