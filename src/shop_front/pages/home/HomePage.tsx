@@ -2,6 +2,8 @@ import { CustomPagination } from "@/components/custom/CustomPagination";
 import { CustomJumbotron } from "../../components/CustomJumbotron";
 import { CustomjumAction } from "../../components/CustomjumAction";
 import { CustomjumStats } from "../../components/CustomjumStats";
+import { ProductsGrid } from "../../components/ProductsGrid";
+import { products } from "@/mock/products.mock";
 
 export const HomePage = () => {
   const handleClickExplore = () => {
@@ -45,6 +47,9 @@ export const HomePage = () => {
       />
       {/* Stats */}
       <CustomjumStats stats={stats} />
+
+      {/* Products Grid */}
+      <ProductsGrid products={products} />
 
       <CustomPagination totalPages={10} />
     </div>

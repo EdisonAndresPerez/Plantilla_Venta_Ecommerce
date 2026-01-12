@@ -1,5 +1,5 @@
 // Import all product images
-import blackTshirt from "@/assets/product-black-tshirt.jpg";
+import blackTshirt from "@/assets/blackTshirt.png";
 import whiteHoodie from "@/assets/product-white-hoodie.jpg";
 import greySweatshirt from "@/assets/product-grey-sweatshirt.jpg";
 import blackJacket from "@/assets/product-black-jacket.jpg";

@@ -3,12 +3,32 @@ import type { Product } from "@/mock/products.mock";
 import { Filter, Grid, List } from "lucide-react";
 import ProductCard from "./ProductCard";
 import ProductFilter from "./ProductFilter";
+import { useSearchParams } from "react-router";
+import { useState } from "react";
 
 interface Props {
   products: Product[];
 }
 
 export const ProductsGrid = ({ products }: Props) => {
+
+
+    const [showFilters, setShowFilters] =  useState(false);
+
+
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    //cambiar el estado de la vista
+    const viewMode = searchParams.get("view") || "grid";
+
+
+
+    const handleViewModeChange = (mode: string) => {
+      searchParams.set("view", mode)
+      setSearchParams(searchParams);
+    }
+
+
   return (
     <>
       <section className="py-12 px-4 lg:px-8">
@@ -38,7 +58,7 @@ export const ProductsGrid = ({ products }: Props) => {
                 <Button
                   variant={viewMode === "grid" ? "default" : "ghost"}
                   size="sm"
-                  onClick={() => setViewMode("grid")}
+                  onClick={() => handleViewModeChange("grid")}
                   className={`rounded-none ${
                     viewMode === "grid" ? "button-gradient" : ""
                   }`}
@@ -48,7 +68,7 @@ export const ProductsGrid = ({ products }: Props) => {
                 <Button
                   variant={viewMode === "list" ? "default" : "ghost"}
                   size="sm"
-                  onClick={() => setViewMode("list")}
+                  onClick={() => handleViewModeChange("list")}
                   className={`rounded-none ${
                     viewMode === "list" ? "button-gradient" : ""
                   }`}
@@ -73,7 +93,7 @@ export const ProductsGrid = ({ products }: Props) => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setShowFilters(false)}
+                    onClick={() => handleViewModeChange("grid")}
                     className="rounded-full hover:bg-primary/10"
                   >
                     Cerrar
@@ -92,7 +112,7 @@ export const ProductsGrid = ({ products }: Props) => {
                     : "space-y-6"
                 }
               >
-                {currentProducts.map((product) => (
+                {products.map((product) => (
                   <ProductCard
                     key={product.id}
                     id={product.id}
