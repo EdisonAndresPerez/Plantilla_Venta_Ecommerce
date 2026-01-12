@@ -7,7 +7,6 @@ export const ShopLayout = () => {
     <div className="min-h-screen">
       <CustomHeader />
       <Outlet />
-
       <CustomFooter />
     </div>
   );

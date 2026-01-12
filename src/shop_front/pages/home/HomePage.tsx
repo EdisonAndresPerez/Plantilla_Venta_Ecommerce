@@ -4,6 +4,7 @@ import { CustomjumAction } from "../../components/CustomjumAction";
 import { CustomjumStats } from "../../components/CustomjumStats";
 import { ProductsGrid } from "../../components/ProductsGrid";
 import { products } from "@/mock/products.mock";
+import { CustomPromotion } from "@/shop_front/components/CustomPromotion";
 
 export const HomePage = () => {
   const handleClickExplore = () => {
@@ -51,7 +52,9 @@ export const HomePage = () => {
       {/* Products Grid */}
       <ProductsGrid products={products} />
 
+
       <CustomPagination totalPages={10} />
+      <CustomPromotion/>
     </div>
   );
 };

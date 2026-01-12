@@ -61,7 +61,7 @@ export const CustomFooter = () => {
 
         <div className="border-t border-border/50 mt-12 pt-8 text-center text-muted-foreground">
           <p>
-            &copy; 2026 bunker|Shop. Todos los derechos reservados. Hecho con 💙
+            &copy; 2026 bunker|Shop. Todos los derechos reservados.
           </p>
         </div>
       </div>
