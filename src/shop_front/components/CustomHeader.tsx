@@ -58,7 +58,7 @@ export const CustomHeader = () => {
             
             <Button 
               size="icon" 
-              className="relative button-gradient rounded-full h-11 w-11"
+              className="relative button-gradient rounded-full h-11 w-11 cursor-pointer"
             >
               <ShoppingBag className="h-5 w-5" />
               {cartCount > 0 && (
