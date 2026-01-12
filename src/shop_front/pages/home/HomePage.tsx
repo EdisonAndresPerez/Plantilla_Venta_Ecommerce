@@ -1,3 +1,4 @@
+import { CustomPagination } from "@/components/custom/CustomPagination";
 import { CustomJumbotron } from "../../components/CustomJumbotron";
 import { CustomjumAction } from "../../components/CustomjumAction";
 import { CustomjumStats } from "../../components/CustomjumStats";
@@ -10,6 +11,12 @@ export const HomePage = () => {
   const handleClickTrends = () => {
     console.log("hola2");
   };
+
+  const stats = [
+    { value: "100+", label: "Productos" },
+    { value: "100+", label: "Clientes" },
+    { value: "4.5★", label: "Rating" },
+  ];
 
   return (
     <div className="min-h-screen">
@@ -37,7 +44,9 @@ export const HomePage = () => {
         titleButtonTrends="Ver Tendencias"
       />
       {/* Stats */}
-      <CustomjumStats />
+      <CustomjumStats stats={stats} />
+
+      <CustomPagination totalPages={10} />
     </div>
   );
 };
