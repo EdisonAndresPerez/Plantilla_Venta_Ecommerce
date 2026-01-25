@@ -6,7 +6,8 @@ import { useProductFilters } from "@/hooks/useProductFilters";
 
 export const CustomHeader = () => {
   const [cartCount] = useState(3);
-  const { currentPrice, setSearch } = useProductFilters();
+  const { currentSearch, setSearch } = useProductFilters();
+  const [searchInput, setSearchInput] = useState(currentSearch);
 
   return (
     <header className="sticky top-0 z-50 w-full glass-effect shadow-lg shadow-primary/5">
@@ -56,8 +57,13 @@ export const CustomHeader = () => {
                 <Input
                   placeholder="Buscar productos..."
                   className="pl-11 w-64 h-11 rounded-full border-2 border-transparent bg-muted/50 focus:border-primary focus:bg-white transition-all duration-300"
-                  value={currentPrice}
-                  onChange={(e) => setSearch(e.target.value)}
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setSearch(searchInput);
+                    }
+                  }}
                 />
               </div>
             </div>

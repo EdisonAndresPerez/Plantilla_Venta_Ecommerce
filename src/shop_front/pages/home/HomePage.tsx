@@ -24,17 +24,17 @@ export const HomePage = () => {
   return (
     <div className="min-h-screen">
       <CustomJumbotron
-        badgeText="Nueva Colección 2026"
+        badgeText="Productores y distribuidores oficiales"
         title={{
-          primary: "Estilo",
-          secondary: "Vibrante",
+          primary: "El sabor que hace",
+          secondary: "que todos vuelvan.",
         }}
         subtitle={{
-          intro: "Descubre ropa que expresa tu personalidad.",
+          intro: "Granizados con personalidad y combinaciones",
           highlights: {
-            text1: "Colores vivos",
-            text2: "diseños únicos",
-            text3: "calidad premium",
+            text1: "creativas",
+            text2: "opciones con y sin licor",
+            text3: "hacen que todos vuelvan por más",
           },
         }}
       />
@@ -42,10 +42,10 @@ export const HomePage = () => {
       {/*  Section Button */}
       <CustomjumAction
         onClickExpolore={handleClickExplore}
-        onClickTrends={handleClickTrends}
-        titleButtonExplore="Explorar Colección"
-        titleButtonTrends="Ver Tendencias"
+        titleButtonExplore="Explorar Productos"
       />
+
+
       {/* Stats */}
       <CustomjumStats stats={stats} />
 

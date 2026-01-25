@@ -56,7 +56,7 @@ const ProductFilter = () => {
         <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
           Precio
         </h4>
-        <RadioGroup defaultValue={currentPrice} onValueChange={setPrice} className="space-y-3">
+        <RadioGroup value={currentPrice} onValueChange={setPrice} className="space-y-3">
           {[
             { value: "any", label: "Cualquier precio" },
             { value: "0-50", label: "$0 - $50" },
