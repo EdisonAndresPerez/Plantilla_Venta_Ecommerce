@@ -2,17 +2,23 @@ import { Search, ShoppingBag, Menu, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { useProductFilters } from "@/hooks/useProductFilters";
 
 export const CustomHeader = () => {
   const [cartCount] = useState(3);
-  
+  const { currentPrice, setSearch } = useProductFilters();
+
   return (
     <header className="sticky top-0 z-50 w-full glass-effect shadow-lg shadow-primary/5">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex h-18 items-center justify-between py-3">
           {/* Logo */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="md:hidden hover:bg-primary/10">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden hover:bg-primary/10"
+            >
               <Menu className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-2">
@@ -20,24 +26,26 @@ export const CustomHeader = () => {
                 <Sparkles className="h-5 w-5 text-white" />
               </div>
               <h1 className="text-2xl font-bold tracking-tight">
-                <span className="text-foreground">bunker</span>
-                <span className="text-primary">|</span>
-                <span className="text-gradient">Shop</span>
+                <span className="text-foreground">Iba</span>
+
+                <span className="text-gradient">Cream</span>
               </h1>
             </div>
           </div>
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-1">
-            {["Camisetas", "Sudaderas", "Chaquetas", "Accesorios"].map((item) => (
-              <a
-                key={item}
-                href="#"
-                className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
-              >
-                {item}
-              </a>
-            ))}
+            {["Camisetas", "Sudaderas", "Chaquetas", "Accesorios"].map(
+              (item) => (
+                <a
+                  key={item}
+                  href="#"
+                  className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+                >
+                  {item}
+                </a>
+              ),
+            )}
           </nav>
 
           {/* Search and Cart */}
@@ -45,19 +53,25 @@ export const CustomHeader = () => {
             <div className="hidden md:flex items-center">
               <div className="relative group">
                 <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                <Input 
-                  placeholder="Buscar productos..." 
+                <Input
+                  placeholder="Buscar productos..."
                   className="pl-11 w-64 h-11 rounded-full border-2 border-transparent bg-muted/50 focus:border-primary focus:bg-white transition-all duration-300"
+                  value={currentPrice}
+                  onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
             </div>
-            
-            <Button variant="ghost" size="icon" className="md:hidden hover:bg-primary/10 rounded-full">
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden hover:bg-primary/10 rounded-full"
+            >
               <Search className="h-5 w-5" />
             </Button>
-            
-            <Button 
-              size="icon" 
+
+            <Button
+              size="icon"
               className="relative button-gradient rounded-full h-11 w-11 cursor-pointer"
             >
               <ShoppingBag className="h-5 w-5" />
@@ -73,4 +87,3 @@ export const CustomHeader = () => {
     </header>
   );
 };
-

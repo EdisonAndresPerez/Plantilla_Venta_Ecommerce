@@ -3,25 +3,11 @@ import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Sparkles } from "lucide-react";
-import { useSearchParams } from "react-router";
+import { useProductFilters } from "@/hooks/useProductFilters";
+
 
 const ProductFilter = () => {
-  //searchParams para leer la URL
-  //setSearchParams para ESCRIBIR / MODIFICAR la URL
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  //talla actuales
-  const currentsizes = searchParams.get("sizes")?.split(",") || [];
-
-  //funcion para manejar el cambio de talla
-  const handleSizeChange = (sizeId: string) => {
-   const newSizes = currentsizes.includes(sizeId)
-      ? currentsizes.filter((size) => size !== sizeId) //eliminar talla
-      : [...currentsizes, sizeId]; //agregar talla
-
-      searchParams.set('sizes', newSizes.join(','));
-      setSearchParams(searchParams);
-  };
+ const { currentsizes, currentPrice, toggleSize, setPrice } = useProductFilters();
 
   const sizes = [
     { id: "xs", label: "XS" },
@@ -30,14 +16,6 @@ const ProductFilter = () => {
     { id: "l", label: "L" },
     { id: "xl", label: "XL" },
     { id: "xxl", label: "XXL" },
-  ];
-
-  const colors = [
-    { id: "black", color: "bg-foreground" },
-    { id: "white", color: "bg-white border-2 border-border" },
-    { id: "coral", color: "bg-primary" },
-    { id: "purple", color: "bg-secondary" },
-    { id: "teal", color: "bg-accent" },
   ];
 
   return (
@@ -58,10 +36,10 @@ const ProductFilter = () => {
           {sizes.map((size) => (
             <Button
               key={size.id}
-              onClick={() => handleSizeChange(size.id)}
+              onClick={() => toggleSize(size.id)}
               variant={currentsizes.includes(size.id) ? "default" : "outline"}
               size="sm"
-              className="h-10 rounded-xl font-medium hover:bg-primary hover:text-white hover:border-primary transition-all duration-300"
+              className="h-10 rounded-xl font-medium hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 cursor-pointer"
             >
               {size.label}
             </Button>
@@ -71,21 +49,6 @@ const ProductFilter = () => {
 
       <Separator className="bg-border/50" />
 
-      {/* Colors */}
-      <div className="space-y-4">
-        <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
-          Colores
-        </h4>
-        <div className="flex gap-3">
-          {colors.map((color) => (
-            <button
-              key={color.id}
-              className={`h-8 w-8 rounded-full ${color.color} hover:scale-125 transition-transform duration-300 shadow-md hover:shadow-lg`}
-            />
-          ))}
-        </div>
-      </div>
-
       <Separator className="bg-border/50" />
 
       {/* Price Range */}
@@ -93,7 +56,7 @@ const ProductFilter = () => {
         <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
           Precio
         </h4>
-        <RadioGroup defaultValue="" className="space-y-3">
+        <RadioGroup defaultValue={currentPrice} onValueChange={setPrice} className="space-y-3">
           {[
             { value: "any", label: "Cualquier precio" },
             { value: "0-50", label: "$0 - $50" },
