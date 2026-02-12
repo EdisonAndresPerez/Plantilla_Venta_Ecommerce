@@ -11,10 +11,6 @@ export const HomePage = () => {
     console.log("hola");
   };
 
-  const handleClickTrends = () => {
-    console.log("hola2");
-  };
-
   const stats = [
     { value: "100+", label: "Productos" },
     { value: "100+", label: "Clientes" },
@@ -24,17 +20,17 @@ export const HomePage = () => {
   return (
     <div className="min-h-screen">
       <CustomJumbotron
-        badgeText="Productores y distribuidores oficiales"
+        badgeText="Moda urbana y exclusiva"
         title={{
-          primary: "El sabor que hace",
-          secondary: "que todos vuelvan.",
+          primary: "El estilo que hace",
+          secondary: "que todos volteen.",
         }}
         subtitle={{
-          intro: "Granizados con personalidad y combinaciones",
+          intro: "Ropa con personalidad y diseños",
           highlights: {
-            text1: "creativas",
-            text2: "opciones con y sin licor",
-            text3: "hacen que todos vuelvan por más",
+            text1: "exclusivos",
+            text2: "calidad premium",
+            text3: "piezas que definen tu estilo",
           },
         }}
       />

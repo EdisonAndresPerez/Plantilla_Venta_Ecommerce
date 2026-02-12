@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useProductFilters } from "@/hooks/useProductFilters";
+import { Link } from "react-router-dom";
 
 export const CustomHeader = () => {
   const [cartCount] = useState(3);
@@ -27,26 +28,38 @@ export const CustomHeader = () => {
                 <Sparkles className="h-5 w-5 text-white" />
               </div>
               <h1 className="text-2xl font-bold tracking-tight">
-                <span className="text-foreground">Iba</span>
-
-                <span className="text-gradient">Cream</span>
+                <span className="text-foreground">bunker</span>
+                <span className="text-gradient">|Shop</span>
               </h1>
             </div>
           </div>
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-1">
-            {["Camisetas", "Sudaderas", "Chaquetas", "Accesorios"].map(
-              (item) => (
-                <a
-                  key={item}
-                  href="#"
-                  className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
-                >
-                  {item}
-                </a>
-              ),
-            )}
+            <Link
+              to="/gender/men"
+              className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+            >
+              Camisetas
+            </Link>
+            <Link
+              to="/gender/women"
+              className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+            >
+              Sudaderas
+            </Link>
+            <Link
+              to="/gender/kid"
+              className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+            >
+              Chaquetas
+            </Link>
+            <Link
+              to="/gender/all"
+              className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+            >
+              Accesorios
+            </Link>
           </nav>
 
           {/* Search and Cart */}
