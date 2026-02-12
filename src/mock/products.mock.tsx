@@ -5,6 +5,9 @@ import greySweatshirt from "@/assets/product-grey-sweatshirt.jpg";
 import blackJacket from "@/assets/product-black-jacket.jpg";
 import whiteCap from "@/assets/product-white-cap.jpg";
 import blackBackpack from "@/assets/product-black-backpack.jpg";
+import gorra from "@/assets/gorra.png";
+import mochila from "@/assets/mochila.png";
+
 
 export interface Product {
   id: string;
@@ -97,5 +100,25 @@ export const products: Product[] = [
     description: "Sudadera negra con capucha y bolsillo frontal tipo canguro.",
     sizes: ["S", "M", "L", "XL", "XXL"],
     colors: ["Negro", "Gris", "Azul Marino"]
-  }
+  },
+  {
+    id: "9",
+    name: "Gorra BunkerShop beige",
+    price: 85,
+    image: gorra,
+    category: "Accesorios",
+    description: "Gorra de alta calidad.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    colors: ["Blanco", "Negro", "Gris", "Beige"]
+  },
+   {
+    id: "10",
+    name: "Mochila BunkerShop negra",
+    price: 120,
+    image: mochila,
+    category: "Accesorios",
+    description: "Mochila de alta calidad.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    colors: ["Blanco", "Negro", "Gris", "Beige"]
+  },
 ];

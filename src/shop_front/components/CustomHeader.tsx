@@ -3,12 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useProductFilters } from "@/hooks/useProductFilters";
-import { Link } from "react-router-dom";
+import { Link, useParams  } from "react-router-dom";
 
 export const CustomHeader = () => {
   const [cartCount] = useState(3);
   const { currentSearch, setSearch } = useProductFilters();
   const [searchInput, setSearchInput] = useState(currentSearch);
+  const {gender} = useParams();
+
+  console.log(gender);
 
   return (
     <header className="sticky top-0 z-50 w-full glass-effect shadow-lg shadow-primary/5">
@@ -36,26 +39,32 @@ export const CustomHeader = () => {
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-1">
+             <Link
+              to="/"
+              className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+            >
+              Todo
+            </Link>
             <Link
-              to="/gender/men"
+              to="/gender/camisetas"
               className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
             >
               Camisetas
             </Link>
             <Link
-              to="/gender/women"
+              to="/gender/sudaderas"
               className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
             >
               Sudaderas
             </Link>
             <Link
-              to="/gender/kid"
+              to="/gender/chaquetas"
               className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
             >
               Chaquetas
             </Link>
             <Link
-              to="/gender/all"
+              to="/gender/accesorios"
               className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
             >
               Accesorios
