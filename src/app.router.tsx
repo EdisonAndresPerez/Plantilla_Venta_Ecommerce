@@ -11,6 +11,7 @@ import { RegisterPage } from "./auth/pages/register/RegisterPage";
 import { AdminProductFormPage } from "./admin/pages/product/AdminProductFormPage";
 import { AdminProductsListPage } from "./admin/pages/products/AdminProductsListPage";
 import { DashboardPage } from "./admin/pages/dashboard/DashboardPage";
+import { Not404 } from "./components/Not404";
 
 const AuthLayoutLazy = lazy(() => import("./auth/layouts/AuthLayout"));
 const AdminLayoutLazy = lazy(() => import("./admin/layouts/AdminLayout"));
@@ -77,8 +78,9 @@ export const AppRouter = createBrowserRouter([
     ],
   },
 
+  //Ruta para manejar rutas no encontradas
   {
     path: "*",
-    element: <Navigate to="/" />,
+    element: <Not404 />,
   },
 ]);
