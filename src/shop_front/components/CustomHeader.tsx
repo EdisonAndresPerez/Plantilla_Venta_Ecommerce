@@ -1,10 +1,11 @@
-import { Search, ShoppingBag, Menu, Sparkles } from "lucide-react";
+import { Search, ShoppingBag} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useProductFilters } from "@/hooks/useProductFilters";
 import { Link, useParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { CustomLogo } from "./CustomLogo";
 
 
 export const CustomHeader = () => {
@@ -20,24 +21,9 @@ export const CustomHeader = () => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex h-18 items-center justify-between py-3">
           {/* Logo */}
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden hover:bg-primary/10"
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-            <div className="flex items-center gap-2">
-              <div className="h-10 w-10 rounded-xl button-gradient flex items-center justify-center animate-pulse-glow">
-                <Sparkles className="h-5 w-5 text-white" />
-              </div>
-              <h1 className="text-2xl font-bold tracking-tight">
-                <span className="text-foreground">bunker</span>
-                <span className="text-gradient">|Shop</span>
-              </h1>
-            </div>
-          </div>
+          <CustomLogo/>
+
+
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-1">

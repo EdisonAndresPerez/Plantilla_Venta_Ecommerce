@@ -81,18 +81,9 @@ export const products: Product[] = [
     sizes: ["Único"],
     colors: ["Negro", "Gris"]
   },
+
   {
     id: "7",
-    name: "Camiseta Tesla Blanca",
-    price: 35,
-    image: blackTshirt, // Reutilizamos la imagen por simplicidad
-    category: "Camisetas",
-    description: "Camiseta blanca de algodón orgánico con logo Tesla discreto.",
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    colors: ["Blanco", "Negro", "Gris"]
-  },
-  {
-    id: "8",
     name: "Sudadera Tesla Negro",
     price: 85,
     image: whiteHoodie,
@@ -102,7 +93,7 @@ export const products: Product[] = [
     colors: ["Negro", "Gris", "Azul Marino"]
   },
   {
-    id: "9",
+    id: "8",
     name: "Gorra BunkerShop beige",
     price: 85,
     image: gorra,
@@ -112,7 +103,7 @@ export const products: Product[] = [
     colors: ["Blanco", "Negro", "Gris", "Beige"]
   },
    {
-    id: "10",
+    id: "9",
     name: "Mochila BunkerShop negra",
     price: 120,
     image: mochila,

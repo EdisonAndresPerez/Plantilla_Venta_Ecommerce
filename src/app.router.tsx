@@ -5,7 +5,7 @@ import { ShopLayout } from "./shop_front/layouts/ShopLayout";
 import { HomePage } from "./shop_front/pages/home/HomePage";
 import { ProductPage } from "./shop_front/pages/product/ProductPage";
 import { GenderPage } from "./shop_front/pages/gender/GenderPage";
-import { LoginPage } from "./auth/pages/login/LoginPage";
+import LoginPage from "./auth/pages/login/LoginPage";
 import { RegisterPage } from "./auth/pages/register/RegisterPage";
 
 
