@@ -8,17 +8,12 @@ import { GenderPage } from "./shop_front/pages/gender/GenderPage";
 import LoginPage from "./auth/pages/login/LoginPage";
 import { RegisterPage } from "./auth/pages/register/RegisterPage";
 
-
-import { AdminProductPage } from "./admin/pages/product/AdminProductPage";
-import { AdminProductsPage } from "./admin/pages/products/AdminProductsPage";
+import { AdminProductFormPage } from "./admin/pages/product/AdminProductFormPage";
+import { AdminProductsListPage } from "./admin/pages/products/AdminProductsListPage";
 import { DashboardPage } from "./admin/pages/dashboard/DashboardPage";
 
-
-
-const  AuthLayoutLazy = lazy(() => import('./auth/layouts/AuthLayout'));
-const AdminLayoutLazy = lazy(() => import('./admin/layouts/AdminLayout'));
-
-
+const AuthLayoutLazy = lazy(() => import("./auth/layouts/AuthLayout"));
+const AdminLayoutLazy = lazy(() => import("./admin/layouts/AdminLayout"));
 
 export const AppRouter = createBrowserRouter([
   //rutas publicas
@@ -73,11 +68,11 @@ export const AppRouter = createBrowserRouter([
       },
       {
         path: "products",
-        element: <AdminProductsPage />,
+        element: <AdminProductsListPage />,
       },
       {
-        path: "products/:id",
-        element: <AdminProductPage />,
+        path: "products/:slug",
+        element: <AdminProductFormPage />,
       },
     ],
   },

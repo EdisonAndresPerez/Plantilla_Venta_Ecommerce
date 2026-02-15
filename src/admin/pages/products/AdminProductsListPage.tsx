@@ -3,66 +3,81 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Plus, Pencil, Trash2 } from "lucide-react";
+import { CustomPagination } from "@/components/custom/CustomPagination";
+import { useNavigate } from "react-router-dom";
 
 const products = [
   {
     id: 1,
     name: "TACTICAL CARGO PANTS",
+    slug: "tactical-cargo-pants",
     category: "Pantalones",
     price: "$89.99",
     stock: 24,
     sizes: ["S", "M", "L", "+1"],
     status: "ACTIVO",
+    image: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=100&h=100&fit=crop",
   },
   {
     id: 2,
     name: "URBAN BOMBER JACKET",
+    slug: "urban-bomber-jacket",
     category: "Chaquetas",
     price: "$159.99",
     stock: 12,
     sizes: ["M", "L", "XL"],
     status: "ACTIVO",
+    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=100&h=100&fit=crop",
   },
   {
     id: 3,
     name: "STEALTH HOODIE",
+    slug: "stealth-hoodie",
     category: "Hoodies",
     price: "$74.99",
     stock: 0,
     sizes: ["S", "M", "L"],
     status: "AGOTADO",
+    image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=100&h=100&fit=crop",
   },
   {
     id: 4,
     name: "MIDNIGHT TEE",
+    slug: "midnight-tee",
     category: "Camisetas",
     price: "$34.99",
     stock: 56,
     sizes: ["XS", "S", "M", "+3"],
     status: "ACTIVO",
+    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=100&h=100&fit=crop",
   },
   {
     id: 5,
     name: "COMBAT BOOTS",
+    slug: "combat-boots",
     category: "Calzado",
     price: "$199.99",
     stock: 8,
     sizes: ["40", "41", "42", "+2"],
     status: "ACTIVO",
+    image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=100&h=100&fit=crop",
   },
   {
     id: 6,
     name: "RESISTANCE VEST",
+    slug: "resistance-vest",
     category: "Chaquetas",
     price: "$129.99",
     stock: 3,
     sizes: ["M", "L"],
     status: "STOCK BAJO",
+    image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=100&h=100&fit=crop",
   },
 ];
 
-export const AdminProductsPage = () => {
+export const AdminProductsListPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -80,7 +95,10 @@ export const AdminProductsPage = () => {
             {filteredProducts.length} productos en catálogo
           </p>
         </div>
-        <Button className="gap-2 bg-yellow-500 font-mono font-semibold uppercase tracking-wide text-black hover:bg-yellow-600">
+        <Button 
+          onClick={() => navigate("/admin/products/new")}
+          className="gap-2 bg-yellow-500 font-mono font-semibold uppercase tracking-wide text-black hover:bg-yellow-600"
+        >
           <Plus className="h-4 w-4" />
           <span className="hidden sm:inline">Nuevo Producto</span>
           <span className="sm:hidden">Nuevo</span>
@@ -105,6 +123,9 @@ export const AdminProductsPage = () => {
             <table className="w-full">
               <thead className="border-b border-border">
                 <tr className="bg-muted/50">
+                  <th className="hidden w-20 px-4 py-4 sm:table-cell sm:px-6">
+                    <span className="sr-only">IMAGEN</span>
+                  </th>
                   <th className="px-4 py-4 text-left font-mono text-xs font-semibold uppercase tracking-widest text-muted-foreground sm:px-6">
                     PRODUCTO
                   </th>
@@ -134,11 +155,27 @@ export const AdminProductsPage = () => {
                     key={product.id}
                     className="hover:bg-muted/50 transition-colors"
                   >
+                    <td className="hidden px-4 py-4 sm:table-cell sm:px-6">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="h-12 w-12 rounded-lg object-cover border-2 border-border"
+                      />
+                    </td>
                     <td className="px-4 py-4 font-mono text-sm font-medium text-foreground sm:px-6">
-                      <div className="truncate max-w-[150px] sm:max-w-[200px] lg:max-w-none">{product.name}</div>
-                      <div className="flex flex-wrap gap-1 text-xs text-muted-foreground md:hidden mt-1">
-                        <span>{product.category}</span>
-                        <span className="lg:hidden">• Stock: {product.stock}</span>
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="h-10 w-10 rounded-lg object-cover border-2 border-border sm:hidden"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate max-w-[150px] sm:max-w-[200px] lg:max-w-none">{product.name}</div>
+                          <div className="flex flex-wrap gap-1 text-xs text-muted-foreground md:hidden mt-1">
+                            <span>{product.category}</span>
+                            <span className="lg:hidden">• Stock: {product.stock}</span>
+                          </div>
+                        </div>
                       </div>
                     </td>
                     <td className="hidden px-6 py-4 font-mono text-sm text-muted-foreground md:table-cell">
@@ -180,6 +217,7 @@ export const AdminProductsPage = () => {
                         <Button
                           size="icon"
                           variant="ghost"
+                          onClick={() => navigate(`/admin/products/${product.slug}`)}
                           className="h-8 w-8 hover:bg-muted hover:text-foreground"
                         >
                           <Pencil className="h-4 w-4" />
@@ -199,7 +237,12 @@ export const AdminProductsPage = () => {
             </table>
           </div>
         </CardContent>
+
+    
       </Card>
+          <CustomPagination totalPages={10}/>
+
+    
     </div>
   );
 };
