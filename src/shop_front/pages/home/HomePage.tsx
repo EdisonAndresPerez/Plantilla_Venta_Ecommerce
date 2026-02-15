@@ -8,7 +8,10 @@ import { CustomPromotion } from "@/shop_front/components/CustomPromotion";
 
 export const HomePage = () => {
   const handleClickExplore = () => {
-    console.log("hola");
+    const productsSection = document.getElementById("products-section");
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   const stats = [
