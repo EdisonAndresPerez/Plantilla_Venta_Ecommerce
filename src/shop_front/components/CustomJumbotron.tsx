@@ -2,14 +2,14 @@ interface Props {
   badgeText?: string;
   title: {
     primary: string;
-    secondary: string;
+    secondary?: string;
   };
   subtitle: {
-    intro: string;
+    intro?: string;
     highlights: {
-      text1: string;
-      text2: string;
-      text3: string;
+      text1?: string;
+      text2?: string;
+      text3?: string;
     };
   };
 }

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useProductFilters } from "@/hooks/useProductFilters";
 import { Link, useParams  } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 export const CustomHeader = () => {
   const [cartCount] = useState(3);
@@ -41,31 +42,52 @@ export const CustomHeader = () => {
           <nav className="hidden md:flex items-center space-x-1">
              <Link
               to="/"
-              className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+              className={cn(
+                `px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary`,
+                !gender ? 'underline underline-offset-4' : ''
+                
+              )}
+             
             >
               Todo
             </Link>
             <Link
               to="/gender/camisetas"
-              className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+                className={cn(
+                `px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary`,
+                gender === "camisetas" ? 'underline underline-offset-4' : ''
+                
+              )}
             >
               Camisetas
             </Link>
             <Link
               to="/gender/sudaderas"
-              className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+              className={cn(
+                `px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary`,
+                gender === "sudaderas" ? 'underline underline-offset-4' : ''
+                
+              )}
             >
               Sudaderas
             </Link>
             <Link
               to="/gender/chaquetas"
-              className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+              className={cn(
+                `px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary`,
+                gender === "chaquetas" ? 'underline underline-offset-4' : ''
+                
+              )}
             >
               Chaquetas
             </Link>
             <Link
               to="/gender/accesorios"
-              className="px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary"
+              className={cn(
+                `px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary`,
+                gender === "accesorios" ? 'underline underline-offset-4' : ''
+                
+              )}
             >
               Accesorios
             </Link>
