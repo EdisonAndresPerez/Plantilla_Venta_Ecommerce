@@ -11,6 +11,7 @@ import { RegisterPage } from "./auth/pages/register/RegisterPage";
 
 import { AdminProductPage } from "./admin/pages/product/AdminProductPage";
 import { AdminProductsPage } from "./admin/pages/products/AdminProductsPage";
+import { DashboardPage } from "./admin/pages/dashboard/DashboardPage";
 
 
 
@@ -67,12 +68,16 @@ export const AppRouter = createBrowserRouter([
     element: <AdminLayoutLazy />,
     children: [
       {
+        index: true,
+        element: <DashboardPage />,
+      },
+      {
         path: "products",
-        element: <AdminProductPage />,
+        element: <AdminProductsPage />,
       },
       {
         path: "products/:id",
-        element: <AdminProductsPage />,
+        element: <AdminProductPage />,
       },
     ],
   },

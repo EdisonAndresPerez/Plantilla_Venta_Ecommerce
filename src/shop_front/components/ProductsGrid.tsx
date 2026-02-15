@@ -31,30 +31,30 @@ export const ProductsGrid = ({ products }: Props) => {
 
   return (
     <>
-      <section className="py-12 px-4 lg:px-8">
+      <section className="py-8 sm:py-10 md:py-12 px-4 lg:px-8">
         <div className="container mx-auto">
-          <div className="flex items-center justify-between mb-10">
-            <div className="flex items-center space-x-4">
-              <h2 className="text-3xl lg:text-4xl font-bold">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8 md:mb-10">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
                 <span className="text-gradient">Productos</span>
               </h2>
-              <span className="px-3 py-1 rounded-full bg-secondary/10 text-secondary text-sm font-medium">
-                {products.length} productos
+              <span className="px-2 sm:px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs sm:text-sm font-medium">
+                {products.length}
               </span>
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
-                className="lg:hidden rounded-full border-2 hover:bg-primary hover:text-white hover:border-primary"
+                className="lg:hidden rounded-full border-2 hover:bg-primary hover:text-white hover:border-primary flex-1 sm:flex-none"
               >
                 <Filter className="h-4 w-4 mr-2" />
                 Filtros
               </Button>
 
-              <div className="hidden md:flex rounded-full border-2 overflow-hidden">
+              <div className="hidden md:flex rounded-full border-2 overflow-hidden flex-1 sm:flex-none justify-end">
                 <Button
                   variant={viewMode === "grid" ? "default" : "ghost"}
                   size="sm"

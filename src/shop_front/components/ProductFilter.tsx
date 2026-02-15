@@ -19,17 +19,17 @@ const ProductFilter = () => {
   ];
 
   return (
-    <div className="w-64 space-y-6 p-6 rounded-2xl glass-effect">
+    <div className="w-full lg:w-64 space-y-4 sm:space-y-6 p-4 sm:p-6 rounded-xl sm:rounded-2xl glass-effect">
       <div className="flex items-center gap-2">
-        <div className="h-8 w-8 rounded-lg button-gradient flex items-center justify-center">
-          <Sparkles className="h-4 w-4 text-white" />
+        <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg button-gradient flex items-center justify-center">
+          <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
         </div>
-        <h3 className="font-bold text-lg">Filtros</h3>
+        <h3 className="font-bold text-base sm:text-lg">Filtros</h3>
       </div>
 
       {/* Sizes */}
-      <div className="space-y-4">
-        <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+      <div className="space-y-3 sm:space-y-4">
+        <h4 className="font-semibold text-xs sm:text-sm text-muted-foreground uppercase tracking-wide">
           Tallas
         </h4>
         <div className="grid grid-cols-3 gap-2">
@@ -39,7 +39,7 @@ const ProductFilter = () => {
               onClick={() => toggleSize(size.id)}
               variant={currentsizes.includes(size.id) ? "default" : "outline"}
               size="sm"
-              className="h-10 rounded-xl font-medium hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 cursor-pointer"
+              className="h-9 sm:h-10 rounded-lg sm:rounded-xl font-medium hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 cursor-pointer text-xs sm:text-sm"
             >
               {size.label}
             </Button>
@@ -52,11 +52,11 @@ const ProductFilter = () => {
       <Separator className="bg-border/50" />
 
       {/* Price Range */}
-      <div className="space-y-4">
-        <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+      <div className="space-y-3 sm:space-y-4">
+        <h4 className="font-semibold text-xs sm:text-sm text-muted-foreground uppercase tracking-wide">
           Precio
         </h4>
-        <RadioGroup value={currentPrice} onValueChange={setPrice} className="space-y-3">
+        <RadioGroup value={currentPrice} onValueChange={setPrice} className="space-y-2 sm:space-y-3">
           {[
             { value: "any", label: "Cualquier precio" },
             { value: "0-50", label: "$0 - $50" },

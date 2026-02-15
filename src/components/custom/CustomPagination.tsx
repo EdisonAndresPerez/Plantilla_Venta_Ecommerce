@@ -21,35 +21,75 @@ export const CustomPagination = ({ totalPages }: Props) => {
   };
 
   return (
-    <div className="flex items-center justify-center space-x-2">
+    <div className="flex items-center justify-center gap-1 sm:gap-2 px-4 py-8">
       <Button
         variant="outline"
         size="sm"
         disabled={page === 1}
         onClick={() => handlePageChange(page - 1)}
+        className="rounded-full h-9 sm:h-10 px-3 sm:px-4"
       >
         <ChevronLeft className="h-4 w-4" />
-        Anteriores
+        <span className="hidden sm:inline ml-1">Anteriores</span>
       </Button>
 
-      {Array.from({ length: totalPages }).map((_, index) => (
-        <Button
-          key={index}
-          variant={page === index + 1 ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => handlePageChange(index + 1)}
-        >
-          {index + 1}
-        </Button>
-      ))}
+      {/* Show all pages on desktop, limited on mobile */}
+      <div className="flex items-center gap-1 sm:gap-2">
+        {/* Mobile: Only show current page and adjacent */}
+        <div className="flex sm:hidden items-center gap-1">
+          {page > 1 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(page - 1)}
+              className="h-9 w-9 rounded-full p-0"
+            >
+              {page - 1}
+            </Button>
+          )}
+          <Button
+            variant="default"
+            size="sm"
+            className="h-9 w-9 rounded-full p-0"
+          >
+            {page}
+          </Button>
+          {page < totalPages && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(page + 1)}
+              className="h-9 w-9 rounded-full p-0"
+            >
+              {page + 1}
+            </Button>
+          )}
+        </div>
+
+        {/* Desktop: Show all pages */}
+        <div className="hidden sm:flex items-center gap-2">
+          {Array.from({ length: totalPages }).map((_, index) => (
+            <Button
+              key={index}
+              variant={page === index + 1 ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => handlePageChange(index + 1)}
+              className="h-10 w-10 rounded-full p-0"
+            >
+              {index + 1}
+            </Button>
+          ))}
+        </div>
+      </div>
 
       <Button
         variant="outline"
         size="sm"
         disabled={page === totalPages}
         onClick={() => handlePageChange(page + 1)}
+        className="rounded-full h-9 sm:h-10 px-3 sm:px-4"
       >
-        Siguientes
+        <span className="hidden sm:inline mr-1">Siguientes</span>
         <ChevronRight className="h-4 w-4" />
       </Button>
     </div>

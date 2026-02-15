@@ -30,12 +30,12 @@ export const AuthContainer = ({ children }: AuthContainerProps) => {
       >
         {/* Logo */}
         <motion.div
-          className="text-center mb-10"
+          className="text-center mb-8 sm:mb-10"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
         >
-          <h1 className="font-display text-6xl tracking-[0.2em] text-bunker-light">
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl tracking-[0.2em] text-bunker-light">
             BUNKER
           </h1>
           <motion.div
@@ -45,7 +45,7 @@ export const AuthContainer = ({ children }: AuthContainerProps) => {
             transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
           />
           <motion.p
-            className="text-bunker-gray text-sm tracking-[0.3em] uppercase mt-3"
+            className="text-bunker-gray text-xs sm:text-sm tracking-[0.3em] uppercase mt-3"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
@@ -56,7 +56,7 @@ export const AuthContainer = ({ children }: AuthContainerProps) => {
 
         {/* Card Container */}
         <motion.div
-          className="bg-bunker-surface/80 backdrop-blur-xl rounded-2xl p-8 border border-bunker-border/50 bunker-glow"
+          className="bg-bunker-surface/80 backdrop-blur-xl rounded-2xl p-6 sm:p-8 border border-bunker-border/50 bunker-glow"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -66,7 +66,7 @@ export const AuthContainer = ({ children }: AuthContainerProps) => {
 
         {/* Footer */}
         <motion.p
-          className="text-center text-bunker-gray/50 text-xs mt-8 tracking-wide"
+          className="text-center text-bunker-gray/50 text-[10px] sm:text-xs mt-6 sm:mt-8 tracking-wide px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
