@@ -3,14 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useProductFilters } from "@/hooks/useProductFilters";
-import { Link, useParams  } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
+
 
 export const CustomHeader = () => {
   const [cartCount] = useState(3);
   const { currentSearch, setSearch } = useProductFilters();
   const [searchInput, setSearchInput] = useState(currentSearch);
-  const {gender} = useParams();
+  const { gender } = useParams();
 
   console.log(gender);
 
@@ -40,23 +41,20 @@ export const CustomHeader = () => {
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-1">
-             <Link
+            <Link
               to="/"
               className={cn(
                 `px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary`,
-                !gender ? 'underline underline-offset-4' : ''
-                
+                !gender ? "underline underline-offset-4" : "",
               )}
-             
             >
               Todo
             </Link>
             <Link
               to="/gender/camisetas"
-                className={cn(
+              className={cn(
                 `px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary`,
-                gender === "camisetas" ? 'underline underline-offset-4' : ''
-                
+                gender === "camisetas" ? "underline underline-offset-4" : "",
               )}
             >
               Camisetas
@@ -65,8 +63,7 @@ export const CustomHeader = () => {
               to="/gender/sudaderas"
               className={cn(
                 `px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary`,
-                gender === "sudaderas" ? 'underline underline-offset-4' : ''
-                
+                gender === "sudaderas" ? "underline underline-offset-4" : "",
               )}
             >
               Sudaderas
@@ -75,8 +72,7 @@ export const CustomHeader = () => {
               to="/gender/chaquetas"
               className={cn(
                 `px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary`,
-                gender === "chaquetas" ? 'underline underline-offset-4' : ''
-                
+                gender === "chaquetas" ? "underline underline-offset-4" : "",
               )}
             >
               Chaquetas
@@ -85,8 +81,7 @@ export const CustomHeader = () => {
               to="/gender/accesorios"
               className={cn(
                 `px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 hover:bg-primary/10 hover:text-primary`,
-                gender === "accesorios" ? 'underline underline-offset-4' : ''
-                
+                gender === "accesorios" ? "underline underline-offset-4" : "",
               )}
             >
               Accesorios
@@ -119,7 +114,25 @@ export const CustomHeader = () => {
             >
               <Search className="h-5 w-5" />
             </Button>
+                  
+                  <Link to="/auth/login">
+                  <Button 
+                  variant="default"
+                  size='sm'
+                   className="cursor-pointer">
+                    Iniciar Sesión
+                  </Button>
+                  </Link>
 
+                   <Link to="/admin">
+                  <Button 
+                  variant="destructive"
+                  size='sm'
+                   className="cursor-pointer">
+                    Panel Administrativo
+                  </Button>
+                  </Link>
+                 
             <Button
               size="icon"
               className="relative button-gradient rounded-full h-11 w-11 cursor-pointer"

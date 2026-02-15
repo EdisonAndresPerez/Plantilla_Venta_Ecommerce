@@ -1,7 +1,7 @@
 interface Props {
   badgeText?: string;
   title: {
-    primary: string;
+    primary?: string;
     secondary?: string;
   };
   subtitle: {
@@ -25,9 +25,11 @@ export const CustomJumbotron = ({ badgeText, title, subtitle }: Props) => {
         <div className="absolute top-40 right-1/4 h-48 w-48 rounded-full bg-accent/20 blur-3xl animate-pulse" />
 
         <div className="container mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6 animate-float">
-            {badgeText}
-          </div>
+          {badgeText && (
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6 animate-float">
+              {badgeText}
+            </div>
+          )}
 
           <h1 className="text-5xl lg:text-8xl font-bold tracking-tight mb-6">
             <span className="text-gradient">{title.primary}</span>{" "}
