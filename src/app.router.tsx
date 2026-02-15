@@ -12,6 +12,7 @@ import { AdminProductFormPage } from "./admin/pages/product/AdminProductFormPage
 import { AdminProductsListPage } from "./admin/pages/products/AdminProductsListPage";
 import { DashboardPage } from "./admin/pages/dashboard/DashboardPage";
 import { Not404 } from "./components/Not404";
+import { SmartRedirect } from "./components/SmartRedirect";
 
 const AuthLayoutLazy = lazy(() => import("./auth/layouts/AuthLayout"));
 const AdminLayoutLazy = lazy(() => import("./admin/layouts/AdminLayout"));
@@ -55,9 +56,12 @@ export const AppRouter = createBrowserRouter([
         path: "register",
         element: <RegisterPage />,
       },
+      {
+        path: "*",
+        element: <Navigate to="/auth/login" replace />,
+      },
     ],
   },
-
   //rutas administrativas
   {
     path: "/admin",
@@ -75,12 +79,16 @@ export const AppRouter = createBrowserRouter([
         path: "products/:slug",
         element: <AdminProductFormPage />,
       },
+      {
+        path: "*",
+        element: <Navigate to="/admin" replace />,
+      },
     ],
   },
 
-  //Ruta para manejar rutas no encontradas
+  //Ruta para manejar rutas no encontradas - redirige inteligentemente según el prefijo
   {
     path: "*",
-    element: <Not404 />,
+    element: <SmartRedirect />,
   },
 ]);
