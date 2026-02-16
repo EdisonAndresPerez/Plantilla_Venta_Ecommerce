@@ -38,9 +38,6 @@ export const ProductsGrid = ({ products }: Props) => {
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
                 <span className="text-gradient">Productos</span>
               </h2>
-              <span className="px-2 sm:px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs sm:text-sm font-medium">
-                {products.length}
-              </span>
             </div>
 
             <div className="flex items-center gap-2 w-full sm:w-auto">

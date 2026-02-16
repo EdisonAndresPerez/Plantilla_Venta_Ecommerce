@@ -29,15 +29,12 @@ export const CustomFooter = () => {
             },
             {
               title: "Ayuda",
-              links: ["Contacto", "Envíos", "Devoluciones", "Guía de Tallas"],
+              links: ["Contacto"],
             },
             {
               title: "Empresa",
               links: [
                 "Sobre Nosotros",
-                "Sustentabilidad",
-                "Carreras",
-                "Prensa",
               ],
             },
           ].map((section) => (
