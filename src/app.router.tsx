@@ -12,6 +12,7 @@ import { AdminProductFormPage } from "./admin/pages/product/AdminProductFormPage
 import { AdminProductsListPage } from "./admin/pages/products/AdminProductsListPage";
 import { DashboardPage } from "./admin/pages/dashboard/DashboardPage";
 import { SmartRedirect } from "./components/SmartRedirect";
+import { AboutPage } from "./shop_front/pages/about/AboutPage";
 
 
 
@@ -37,6 +38,10 @@ export const AppRouter = createBrowserRouter([
         path: "gender/:gender",
         element: <GenderPage />,
       },
+      {
+        path: "about",
+        element: <AboutPage/>,
+      }
     ],
   },
 

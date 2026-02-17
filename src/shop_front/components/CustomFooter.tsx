@@ -1,4 +1,7 @@
 import { Sparkles } from "lucide-react";
+import { Link } from "react-router";
+
+
 
 export const CustomFooter = () => {
   return (
@@ -22,33 +25,40 @@ export const CustomFooter = () => {
             </p>
           </div>
 
-          {[
-            {
-              title: "Productos",
-              links: ["Camisetas", "Sudaderas", "Chaquetas", "Accesorios"],
-            },
-            {
-              title: "Ayuda",
-              links: ["Contacto"],
-            },
-            {
-              title: "Empresa",
-              links: [
-                "Sobre Nosotros",
-              ],
-            },
+              {[
+                {
+                  title: "Productos",
+                  links: [
+                    { label: "Camisetas", to: "/gender/men" },
+                    { label: "Sudaderas", to: "/gender/women" },
+                    { label: "Chaquetas", to: "/gender/kid" },
+                    { label: "Accesorios", to: "/gender/unisex" },
+                  ],
+                },
+                {
+                  title: "Ayuda",
+                  links: [
+                    { label: "Contacto", to: "#" },
+                  ],
+                },
+                {
+                  title: "Empresa",
+                  links: [
+                    { label: "Sobre Nosotros", to: "/about" },
+                  ],
+                },
           ].map((section) => (
             <div key={section.title}>
               <h4 className="font-bold text-base sm:text-lg mb-3 sm:mb-4">{section.title}</h4>
               <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-muted-foreground">
                 {section.links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
+                  <li key={link.label}>
+                    <Link
+                      to={link.to}
                       className="hover:text-primary transition-colors"
                     >
-                      {link}
-                    </a>
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
