@@ -19,6 +19,9 @@ import { AboutPage } from "./shop_front/pages/about/AboutPage";
 const AuthLayoutLazy = lazy(() => import("./auth/layouts/AuthLayout"));
 const AdminLayoutLazy = lazy(() => import("./admin/layouts/AdminLayout"));
 
+
+
+
 export const AppRouter = createBrowserRouter([
   //rutas publicas
   {

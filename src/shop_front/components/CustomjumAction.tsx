@@ -21,7 +21,7 @@ export const CustomjumAction = ({
         <Button
           onClick={onClickExpolore}
           size="lg"
-          className="button-gradient rounded-full px-10 h-14 text-lg font-semibold gap-2 cursor-pointer  "
+          className="bg-yellow-500 hover:bg-yellow-600 text-black rounded-full px-10 h-14 text-lg font-semibold gap-2 cursor-pointer shadow-lg"
         >
           <Zap className="h-5 w-5" />
           {titleButtonExplore}

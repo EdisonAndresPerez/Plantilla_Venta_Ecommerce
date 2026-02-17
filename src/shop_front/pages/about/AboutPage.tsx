@@ -1,89 +1,95 @@
+import { Link } from "react-router";
 
 export const AboutPage = () => {
   return (
-    <section className="bg-gray-50 py-20 px-6 md:px-20">
+    <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-20">
       <div className="max-w-6xl mx-auto">
-        
         {/* Encabezado */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
-            Sobre <span className="text-blue-600">Nosotros</span>
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+            Sobre <span className="text-gradient">Nosotros</span>
           </h2>
-          <p className="mt-6 text-lg text-gray-600 max-w-3xl mx-auto">
-            Somos una empresa comprometida con la innovación, el desarrollo tecnológico
-            y la creación de soluciones digitales que transforman negocios.
-            Creemos en la excelencia, la transparencia y el trabajo bien hecho.
+          <p className="mt-4 sm:mt-6 text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto">
+            bunker|Shop es tu destino para moda urbana y exclusiva. Diseñamos
+            piezas únicas con personalidad que definen tu estilo y hacen que
+            todos volteen. Calidad premium, diseños originales.
           </p>
         </div>
 
         {/* Contenido principal */}
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          
+        <div className="grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
           {/* Imagen */}
           <div className="relative">
             <img
-              src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d"
-              alt="Equipo de trabajo"
-              className="rounded-2xl shadow-xl object-cover w-full h-[400px]"
+              src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04"
+              alt="Moda urbana bunker|Shop"
+              className="rounded-2xl shadow-xl object-cover w-full h-[300px] sm:h-[400px]"
             />
-            <div className="absolute -bottom-6 -right-6 bg-blue-600 text-white p-6 rounded-xl shadow-lg hidden md:block">
-              <h4 className="text-xl font-semibold">+5 años</h4>
-              <p className="text-sm">Impulsando empresas</p>
+            <div className="absolute  bg-yellow-500 -bottom-4 sm:-bottom-6 -right-4 sm:-right-6 card-gradient p-4 sm:p-6 rounded-xl shadow-lg">
+              <h4 className="text-lg sm:text-xl font-semibold">Desde 2026</h4>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Redefiniendo la moda
+              </p>
             </div>
           </div>
 
           {/* Texto */}
           <div>
-            <h3 className="text-3xl font-semibold text-gray-800 mb-6">
-              Construimos experiencias digitales que generan resultados
+            <h3 className="text-2xl sm:text-3xl font-semibold mb-4 sm:mb-6">
+              El estilo que hace que{" "}
+              <span className="text-gradient">todos volteen</span>
             </h3>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              Nuestra misión es ayudar a empresas a crecer mediante soluciones
-              web modernas, optimizadas y escalables. Combinamos diseño,
-              estrategia y tecnología para ofrecer productos digitales que
-              realmente impactan.
+            <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 leading-relaxed">
+              En bunker|Shop creemos que la ropa es más que tela: es una forma
+              de expresión, una declaración de personalidad. Por eso cada pieza
+              que diseñamos busca capturar la esencia de lo urbano, lo exclusivo
+              y lo diferente.
             </p>
-            <p className="text-gray-600 mb-8 leading-relaxed">
-              Trabajamos con metodologías ágiles, enfoque en el cliente y una
-              mentalidad orientada a la mejora continua. No solo desarrollamos
-              software, construimos relaciones duraderas.
+            <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 leading-relaxed">
+              Trabajamos con los mejores materiales, colaboramos con diseñadores
+              emergentes y seguimos las tendencias sin perder nuestra identidad.
+              No vendemos ropa, creamos experiencias que se convierten en tu
+              marca personal.
             </p>
 
-            <button className="bg-blue-600 hover:bg-blue-700 transition-all duration-300 text-white px-8 py-3 rounded-lg font-medium shadow-md">
-              Conoce más sobre nuestros servicios
-            </button>
+            <Link
+              to="/"
+              className="button-gradient hover:opacity-90 transition-all duration-300 text-black px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-medium shadow-md text-sm sm:text-base  bg-yellow-500"
+            >
+              Explora nuestros productos
+            </Link>
           </div>
         </div>
 
         {/* Valores */}
-        <div className="mt-24 grid md:grid-cols-3 gap-10 text-center">
-          <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition">
-            <h4 className="text-xl font-semibold text-gray-800 mb-4">
-              Innovación
+        <div className="mt-16 sm:mt-24 grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-10">
+          <div className="card-gradient p-6 sm:p-8 rounded-xl shadow-md hover:shadow-lg transition text-center">
+            <h4 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">
+              Diseño Exclusivo
             </h4>
-            <p className="text-gray-600">
-              Adoptamos nuevas tecnologías y tendencias para ofrecer siempre
-              soluciones modernas y eficientes.
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Cada prenda es única. Trabajamos con diseñadores para crear piezas
+              que no encontrarás en ningún otro lugar.
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition">
-            <h4 className="text-xl font-semibold text-gray-800 mb-4">
-              Compromiso
+          <div className="card-gradient p-6 sm:p-8 rounded-xl shadow-md hover:shadow-lg transition text-center">
+            <h4 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">
+              Calidad Premium
             </h4>
-            <p className="text-gray-600">
-              Nos involucramos en cada proyecto como si fuera propio,
-              garantizando calidad y cumplimiento.
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Seleccionamos los mejores materiales y procesos de fabricación
+              para garantizar durabilidad y comodidad.
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition">
-            <h4 className="text-xl font-semibold text-gray-800 mb-4">
-              Excelencia
+          <div className="card-gradient p-6 sm:p-8 rounded-xl shadow-md hover:shadow-lg transition text-center sm:col-span-2 md:col-span-1">
+            <h4 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">
+              Moda Urbana
             </h4>
-            <p className="text-gray-600">
-              Buscamos la mejora constante en cada detalle, desde el diseño
-              hasta el rendimiento técnico.
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Capturamos la energía de la ciudad en cada colección. Ropa con
+              actitud para quienes no pasan desapercibidos.
             </p>
           </div>
         </div>

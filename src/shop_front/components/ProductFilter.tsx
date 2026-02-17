@@ -5,9 +5,9 @@ import { Label } from "@/components/ui/label";
 import { Sparkles } from "lucide-react";
 import { useProductFilters } from "@/hooks/useProductFilters";
 
-
 const ProductFilter = () => {
- const { currentsizes, currentPrice, toggleSize, setPrice } = useProductFilters();
+  const { currentsizes, currentPrice, toggleSize, setPrice } =
+    useProductFilters();
 
   const sizes = [
     { id: "xs", label: "XS" },
@@ -39,7 +39,11 @@ const ProductFilter = () => {
               onClick={() => toggleSize(size.id)}
               variant={currentsizes.includes(size.id) ? "default" : "outline"}
               size="sm"
-              className="h-9 sm:h-10 rounded-lg sm:rounded-xl font-medium hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 cursor-pointer text-xs sm:text-sm"
+              className={`h-9 sm:h-10 rounded-lg sm:rounded-xl font-medium hover:bg-primary hover:text-white transition-all duration-300 cursor-pointer text-xs sm:text-sm ${
+                currentsizes.includes(size.id)
+                  ? "border-2 border-yellow-500"
+                  : ""
+              }`}
             >
               {size.label}
             </Button>
@@ -56,7 +60,11 @@ const ProductFilter = () => {
         <h4 className="font-semibold text-xs sm:text-sm text-muted-foreground uppercase tracking-wide">
           Precio
         </h4>
-        <RadioGroup value={currentPrice} onValueChange={setPrice} className="space-y-2 sm:space-y-3">
+        <RadioGroup
+          value={currentPrice}
+          onValueChange={setPrice}
+          className="space-y-2 sm:space-y-3"
+        >
           {[
             { value: "any", label: "Cualquier precio" },
             { value: "0-50", label: "$0 - $50" },

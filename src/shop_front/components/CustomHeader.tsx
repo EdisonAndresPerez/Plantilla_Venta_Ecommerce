@@ -102,7 +102,7 @@ export const CustomHeader = () => {
                 </Link>
 
                 <Link to="/admin" className="hidden xl:inline-block">
-                  <Button variant="destructive" size="sm" className="cursor-pointer text-xs">
+                  <Button variant="destructive" size="sm" className="cursor-pointer text-xs  bg-yellow-500  text-black  font-semibold">
                     Admin
                   </Button>
                 </Link>
@@ -115,7 +115,7 @@ export const CustomHeader = () => {
               >
                 <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-red-500 text-white text-[10px] sm:text-xs font-bold flex items-center justify-center shadow-lg animate-bounce">
+                  <span className="absolute -top-1 -right-1 h-5 w-5 sm:h-6 sm:w-6 rounded-full  bg-yellow-500  text-white text-[10px] sm:text-xs font-bold flex items-center justify-center shadow-lg animate-bounce">
                     {cartCount}
                   </span>
                 )}
