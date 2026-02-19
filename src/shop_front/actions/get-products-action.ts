@@ -4,18 +4,21 @@ import type { Products } from "@/interfaces/products.response";
 interface Options {
   limit?: number | string | undefined;
   offset?: number | string | undefined;
+  sizes?: string | undefined;
+  gender?: string | undefined;
 }
 
 export const getProductsAction = async (options: Options) => {
-  const { limit, offset } = options;
+  const { limit, offset, sizes, gender } = options;
 
   const { data } = await tesloApi.get<Products>("/products", {
     params: {
       limit,
       offset,
+      sizes,
+      gender,
     },
   });
-  console.log(data);
 
   const productsWithImagesUrl = data.products.map((product) => ({
     ...product,
