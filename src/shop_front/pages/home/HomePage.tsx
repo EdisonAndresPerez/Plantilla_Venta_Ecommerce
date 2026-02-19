@@ -5,8 +5,14 @@ import { CustomjumStats } from "../../components/CustomjumStats";
 import { ProductsGrid } from "../../components/ProductsGrid";
 import { products } from "@/mock/products.mock";
 import { CustomPromotion } from "@/shop_front/components/CustomPromotion";
+import { useProducts } from "@/shop_front/hooks/useProducts";
 
 export const HomePage = () => {
+
+const { data } = useProducts()
+
+
+
   const handleClickExplore = () => {
     const productsSection = document.getElementById("products-section");
     if (productsSection) {
@@ -44,16 +50,14 @@ export const HomePage = () => {
         titleButtonExplore="Explorar Productos"
       />
 
-
       {/* Stats */}
       <CustomjumStats stats={stats} />
 
       {/* Products Grid */}
       <ProductsGrid products={products} />
 
-
       <CustomPagination totalPages={10} />
-      <CustomPromotion/>
+      <CustomPromotion />
     </div>
   );
 };
