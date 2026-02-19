@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import type { Size } from "@/interfaces/product.interface";
 import { ShoppingBag, Heart } from "lucide-react";
 import { useState } from "react";
 
@@ -9,16 +10,32 @@ interface ProductCardProps {
   price: number;
   image: string;
   category: string;
+  size: Size[];
 }
 
 const ProductCard = ({
-  id,
   name,
   price,
   image,
   category,
+  size,
 }: ProductCardProps) => {
   const [isLiked, setIsLiked] = useState(false);
+
+  // Mapeo de categorías/géneros a español
+  const categoryMap: Record<string, string> = {
+    women: "Mujer",
+    men: "Hombre",
+    kid: "Niño",
+    unisex: "Unisex",
+    // Si vienen tipos de producto en español
+    camisetas: "Camisetas",
+    sudaderas: "Sudaderas",
+    chaquetas: "Chaquetas",
+    accesorios: "Accesorios",
+  };
+
+  const categoryFormatted = categoryMap[category.toLowerCase()] || category;
 
   return (
     <Card className="group border-0 product-card-hover cursor-pointer card-gradient rounded-xl sm:rounded-2xl overflow-hidden">
@@ -53,7 +70,7 @@ const ProductCard = ({
           {/* Category badge */}
           <div className="absolute top-3 sm:top-4 left-3 sm:left-4">
             <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-yellow-500 text-black shadow-lg">
-              {category}
+              {categoryFormatted} | {size.join(", ")}
             </span>
           </div>
 

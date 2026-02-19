@@ -3,7 +3,6 @@ import { CustomJumbotron } from "../../components/CustomJumbotron";
 import { CustomjumAction } from "../../components/CustomjumAction";
 import { CustomjumStats } from "../../components/CustomjumStats";
 import { ProductsGrid } from "../../components/ProductsGrid";
-import { products } from "@/mock/products.mock";
 import { CustomPromotion } from "@/shop_front/components/CustomPromotion";
 import { useProducts } from "@/shop_front/hooks/useProducts";
 
@@ -21,7 +20,7 @@ const { data } = useProducts()
   };
 
   const stats = [
-    { value: "100+", label: "Productos" },
+    { value: `${data?.count || 0}`, label: "Productos" },
     { value: "100+", label: "Clientes" },
     { value: "4.5★", label: "Rating" },
   ];
@@ -54,9 +53,9 @@ const { data } = useProducts()
       <CustomjumStats stats={stats} />
 
       {/* Products Grid */}
-      <ProductsGrid products={products} />
+      <ProductsGrid products={data?.products || []} />
 
-      <CustomPagination totalPages={10} />
+      <CustomPagination totalPages={data?.pages || 0} />
       <CustomPromotion />
     </div>
   );
