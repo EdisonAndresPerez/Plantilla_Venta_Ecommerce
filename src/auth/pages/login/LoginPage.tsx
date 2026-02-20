@@ -7,9 +7,10 @@ import { toast } from "sonner";
 import { AuthContainer } from "@/auth/components/AuthContainer";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { loginAction } from "@/auth/actions/login.action";
+import { useStoreAuth } from "@/auth/store/auth.store";
 
 const LoginPage = () => {
+  const { login } = useStoreAuth();
 
   const navigate = useNavigate();
 
@@ -24,33 +25,20 @@ const LoginPage = () => {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-   // console.log({email, password})
-   
-   
-   try {
-      const data = await loginAction(email, password)
-      localStorage.setItem("token", data.token)
-      console.log("Login exitoso:", data);
-      console.log("redireccionando a home...");
-      navigate("/")
-    } catch (error) {
-      console.log(error);
+    const isLoginValid = await login(email, password);
+
+    setIsLoading(false);
+
+    if (isLoginValid) {
+      toast.success("Bienvenido de vuelta", {
+        description: "Has iniciado sesión correctamente.",
+      });
+      navigate("/");
+    } else {
       toast.error("Error al iniciar sesión", {
         description: "Revisa tus credenciales e intenta de nuevo.",
       });
-      setIsLoading(false);
-      return;
     }
-
-
-
-    // Simulate loading
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsLoading(false);
-
-    toast.success("Bienvenido de vuelta", {
-      description: "Has iniciado sesión correctamente.",
-    });
   };
 
   return (
