@@ -11,7 +11,7 @@ import { useStoreAuth } from "@/auth/store/auth.store";
 
 export const CustomHeader = () => {
 
-  const {user, logout} = useStoreAuth()
+  const {authStatus, logout, isAdmin} = useStoreAuth()
   //console.log(user)
 
   const [cartCount] = useState(3);
@@ -99,7 +99,7 @@ export const CustomHeader = () => {
 
               {/* Auth Buttons - Hidden on small mobile */}
               <div className="hidden sm:flex items-center gap-2">
-                {!user ? (
+                {authStatus === "not-authenticated" ? (
                   <Link to="/auth/login">
                     <Button variant="default" size="sm" className="cursor-pointer text-xs">
                       <span className="hidden lg:inline">Iniciar Sesión</span>
@@ -118,11 +118,13 @@ export const CustomHeader = () => {
                   </Button>
                 )}
 
-                <Link to="/admin" className="hidden xl:inline-block">
-                  <Button variant="destructive" size="sm" className="cursor-pointer text-xs  bg-yellow-500  text-black  font-semibold">
-                    Admin
-                  </Button>
-                </Link>
+                {isAdmin() && (
+                  <Link to="/admin" className="hidden xl:inline-block">
+                    <Button variant="destructive" size="sm" className="cursor-pointer text-xs  bg-yellow-500  text-black  font-semibold">
+                      Panel Administrativo
+                    </Button>
+                  </Link>
+                )}
               </div>
 
               {/* Cart */}
@@ -171,7 +173,7 @@ export const CustomHeader = () => {
               ))}
 
               <div className="pt-4 space-y-2 border-t border-border">
-                {!user ? (
+                {authStatus === "not-authenticated" ? (
                   <Link to="/auth/login" onClick={() => setMobileMenuOpen(false)}>
                     <Button variant="default" className="w-full cursor-pointer">
                       Iniciar Sesión
