@@ -6,9 +6,14 @@ import { useProductFilters } from "@/hooks/useProductFilters";
 import { Link, useParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { CustomLogo } from "./CustomLogo";
+import { useStoreAuth } from "@/auth/store/auth.store";
 
 
 export const CustomHeader = () => {
+
+  const {user, logout} = useStoreAuth()
+  console.log(user)
+
   const [cartCount] = useState(3);
   const { currentSearch, setSearch } = useProductFilters();
   const [searchInput, setSearchInput] = useState(currentSearch);
@@ -94,12 +99,24 @@ export const CustomHeader = () => {
 
               {/* Auth Buttons - Hidden on small mobile */}
               <div className="hidden sm:flex items-center gap-2">
-                <Link to="/auth/login">
-                  <Button variant="default" size="sm" className="cursor-pointer text-xs">
-                    <span className="hidden lg:inline">Iniciar Sesión</span>
-                    <span className="lg:hidden">Login</span>
+                {!user ? (
+                  <Link to="/auth/login">
+                    <Button variant="default" size="sm" className="cursor-pointer text-xs">
+                      <span className="hidden lg:inline">Iniciar Sesión</span>
+                      <span className="lg:hidden">Login</span>
+                    </Button>
+                  </Link>
+                ) : (
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    className="cursor-pointer text-xs"
+                    onClick={logout}
+                  >
+                    <span className="hidden lg:inline">Cerrar Sesión</span>
+                    <span className="lg:hidden">Salir</span>
                   </Button>
-                </Link>
+                )}
 
                 <Link to="/admin" className="hidden xl:inline-block">
                   <Button variant="destructive" size="sm" className="cursor-pointer text-xs  bg-yellow-500  text-black  font-semibold">
@@ -154,11 +171,24 @@ export const CustomHeader = () => {
               ))}
 
               <div className="pt-4 space-y-2 border-t border-border">
-                <Link to="/auth/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="default" className="w-full cursor-pointer">
-                    Iniciar Sesión
+                {!user ? (
+                  <Link to="/auth/login" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="default" className="w-full cursor-pointer">
+                      Iniciar Sesión
+                    </Button>
+                  </Link>
+                ) : (
+                  <Button 
+                    variant="default" 
+                    className="w-full cursor-pointer"
+                    onClick={() => {
+                      logout();
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Cerrar Sesión
                   </Button>
-                </Link>
+                )}
                 <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
                   <Button variant="outline" className="w-full cursor-pointer">
                     Panel Administrativo

@@ -11,6 +11,7 @@ type authStore = {
 
   //actions
   login: (email: string, password: string) => Promise<boolean>;
+  logout: () => void;
 };
 
 export const useStoreAuth = create<authStore>()((set) => ({
@@ -20,6 +21,7 @@ export const useStoreAuth = create<authStore>()((set) => ({
 
   //acciones
   login: async (email, password) => {
+    console.log({ email, password });
     try {
       const data = await loginAction(email, password);
       localStorage.setItem("token", data.token);
@@ -31,5 +33,9 @@ export const useStoreAuth = create<authStore>()((set) => ({
       set({ user: null, token: null });
       return false;
     }
+  },
+  logout: () => {
+    localStorage.removeItem("token");
+    set({ user: null, token: null });
   },
 }));
