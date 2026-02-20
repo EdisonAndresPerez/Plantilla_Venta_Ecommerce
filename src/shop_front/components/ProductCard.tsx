@@ -1,3 +1,4 @@
+import { useStoreAuth } from "@/auth/store/auth.store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Size } from "@/interfaces/product.interface";
@@ -20,6 +21,11 @@ const ProductCard = ({
   category,
   size,
 }: ProductCardProps) => {
+
+    const {user} = useStoreAuth()
+
+
+
   const [isLiked, setIsLiked] = useState(false);
 
   // Mapeo de categorías/géneros a español
@@ -51,7 +57,7 @@ const ProductCard = ({
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
           {/* Like button */}
-          <button
+          <button 
             onClick={(e) => {
               e.stopPropagation();
               setIsLiked(!isLiked);
@@ -76,10 +82,14 @@ const ProductCard = ({
 
           {/* Quick add button */}
           <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-            <Button className="w-full button-gradient rounded-full h-10 sm:h-12 text-xs sm:text-sm font-semibold gap-2">
+            <Button
+              disabled={!user}
+            className="w-full button-gradient rounded-full h-10 sm:h-12 text-xs sm:text-sm font-semibold gap-2">
               <ShoppingBag className="h-3 sm:h-4 w-3 sm:w-4" />
-              <span className="hidden sm:inline">Agregar al carrito</span>
-              <span className="sm:hidden">Agregar</span>
+              <span className="hidden sm:inline">
+                {user ? "Agregar al carrito" : "Inicia sesión para comprar"}
+              </span>
+              <span className="sm:hidden">{user ? "Agregar" : "Login"}</span>
             </Button>
           </div>
         </div>
