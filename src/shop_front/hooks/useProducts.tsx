@@ -13,7 +13,7 @@ export const useProducts = () => {
 
   const price = searchParams.get("price") || "any";
   const search = searchParams.get("search") || "";
-  console.log(search)
+ 
 
   let minPrice: number | undefined;
   let maxPrice: number | undefined;

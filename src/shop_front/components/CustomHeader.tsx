@@ -12,7 +12,7 @@ import { useStoreAuth } from "@/auth/store/auth.store";
 export const CustomHeader = () => {
 
   const {user, logout} = useStoreAuth()
-  console.log(user)
+  //console.log(user)
 
   const [cartCount] = useState(3);
   const { currentSearch, setSearch } = useProductFilters();
