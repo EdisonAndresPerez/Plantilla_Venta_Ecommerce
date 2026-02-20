@@ -38,8 +38,6 @@ export const useProducts = () => {
       maxPrice = undefined;
       break;
   }
-
-
   //console.log(gender, sizes, price, search);
 
 

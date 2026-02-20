@@ -18,6 +18,21 @@ export const CustomPagination = ({ totalPages }: Props) => {
     searchParams.set('page', page.toString());
 
     setSearchParams(searchParams);
+
+    // Pequeño delay para que React actualice el DOM primero
+    setTimeout(() => {
+      const productsSection = document.getElementById('products-section');
+      if (productsSection) {
+        // Calcular posición con offset para headers
+        const yOffset = -80; // Ajusta este valor si tienes header fijo
+        const y = productsSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      } else {
+        // Si no existe la sección, scroll al inicio
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   return (

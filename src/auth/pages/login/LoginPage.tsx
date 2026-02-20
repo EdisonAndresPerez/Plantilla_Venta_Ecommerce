@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Lock, Mail, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,22 +5,49 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { AuthContainer } from "@/auth/components/AuthContainer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { loginAction } from "@/auth/actions/login.action";
 
 const LoginPage = () => {
+
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+   // console.log({email, password})
+   
+   
+   try {
+      const data = await loginAction(email, password)
+      localStorage.setItem("token", data.token)
+      console.log("Login exitoso:", data);
+      console.log("redireccionando a home...");
+      navigate("/")
+    } catch (error) {
+      console.log(error);
+      toast.error("Error al iniciar sesión", {
+        description: "Revisa tus credenciales e intenta de nuevo.",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+
+
     // Simulate loading
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsLoading(false);
-    
+
     toast.success("Bienvenido de vuelta", {
       description: "Has iniciado sesión correctamente.",
     });
@@ -55,8 +81,7 @@ const LoginPage = () => {
               <Input
                 type="email"
                 placeholder="tu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="email"
                 className="bg-bunker-dark/50 border-bunker-border/30 text-bunker-light placeholder:text-bunker-gray/50 h-12 rounded-xl pl-11 focus-visible:ring-bunker-border/50 focus-visible:ring-offset-0"
                 required
               />
@@ -72,8 +97,7 @@ const LoginPage = () => {
               <Input
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                name="password"
                 className="bg-bunker-dark/50 border-bunker-border/30 text-bunker-light placeholder:text-bunker-gray/50 h-12 rounded-xl pl-11 pr-11 focus-visible:ring-bunker-border/50 focus-visible:ring-offset-0"
                 required
               />

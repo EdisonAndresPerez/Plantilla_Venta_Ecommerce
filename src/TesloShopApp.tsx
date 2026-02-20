@@ -11,10 +11,8 @@ const TesloShopApp = () => {
     <>
       <QueryClientProvider client={queryClient}>
         {/* The rest of your application */}
-
         <RouterProvider router={AppRouter} />
         <Toaster />
-
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </>
