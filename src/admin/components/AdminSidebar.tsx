@@ -10,14 +10,14 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useStoreAuth } from "@/auth/store/auth.store";
 
 const navItems = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
   { title: "Productos", url: "/admin/products", icon: ShoppingBag },
   { title: "Categorías", url: "/admin/categories", icon: Tags },
   { title: "Inventario", url: "/admin/inventory", icon: Package },
-  { title: "Analytics", url: "/admin/analytics", icon: BarChart3 },
-  { title: "Settings", url: "/admin/settings", icon: Settings },
+
 ];
 
 interface AdminSidebarProps {
@@ -26,6 +26,13 @@ interface AdminSidebarProps {
 }
 
 export function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
+
+
+
+  const {user} = useStoreAuth()
+  console.log(user)
+
+
   return (
     <>
       {/* Overlay para móvil */}
@@ -78,12 +85,14 @@ export function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
         {/* Footer */}
         <div className="border-t border-border p-4">
           <div className="flex items-center gap-3">
+
             <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-secondary font-mono text-xs font-bold text-secondary-foreground">
-              AD
+              {user?.email.charAt(0).toUpperCase()}
             </div>
+            
             <div className="flex-1 overflow-hidden">
-              <p className="truncate text-sm font-medium text-foreground">Admin</p>
-              <p className="truncate text-xs text-muted-foreground">admin@bunker.shop</p>
+              <p className="truncate text-sm font-medium text-foreground">{user?.roles}</p>
+              <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
             </div>
           </div>
         </div>

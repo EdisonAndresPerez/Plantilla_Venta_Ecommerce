@@ -2,10 +2,13 @@ import type { User } from "@/interfaces/user.interface";
 import { create } from "zustand";
 import { loginAction } from "../actions/login.action";
 
+type authStatus = "authenticated" | "not-authenticated" | "checking";
+
 type authStore = {
   //properties
   user: User | null;
   token: string | null;
+  authStatus: authStatus;
 
   //geeters
 
@@ -18,6 +21,7 @@ export const useStoreAuth = create<authStore>()((set) => ({
   //implementacion de store
   user: null,
   token: null,
+  authStatus: "checking",
 
   //acciones
   login: async (email, password) => {
