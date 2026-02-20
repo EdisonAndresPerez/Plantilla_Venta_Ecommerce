@@ -13,6 +13,7 @@ import { AdminProductsListPage } from "./admin/pages/products/AdminProductsListP
 import { DashboardPage } from "./admin/pages/dashboard/DashboardPage";
 import { SmartRedirect } from "./components/SmartRedirect";
 import { AboutPage } from "./shop_front/pages/about/AboutPage";
+import { AdminAuthenticatedRoute,  NoAuthenticatedRoute } from "./components/routes/ProtectedRoutes";
 
 
 
@@ -51,7 +52,10 @@ export const AppRouter = createBrowserRouter([
   //Rutas Autenticacion
   {
     path: "/auth",
-    element: <AuthLayoutLazy />,
+    element: 
+    <NoAuthenticatedRoute>
+      <AuthLayoutLazy />,
+    </NoAuthenticatedRoute>,
     children: [
       {
         index: true,
@@ -74,7 +78,10 @@ export const AppRouter = createBrowserRouter([
   //rutas administrativas
   {
     path: "/admin",
-    element: <AdminLayoutLazy />,
+    element:
+    <AdminAuthenticatedRoute>
+      <AdminLayoutLazy />,
+    </AdminAuthenticatedRoute> ,
     children: [
       {
         index: true,
