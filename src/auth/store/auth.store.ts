@@ -12,6 +12,7 @@ type authStore = {
   authStatus: authStatus;
 
   //geeters
+  isAdmin: () => boolean;
 
   //actions
   login: (email: string, password: string) => Promise<boolean>;
@@ -19,11 +20,24 @@ type authStore = {
   checkAuthStatus: () => Promise<boolean>;
 };
 
-export const useStoreAuth = create<authStore>()((set) => ({
+export const useStoreAuth = create<authStore>()((set, get) => ({
   //implementacion de store
   user: null,
   token: null,
   authStatus: "checking",
+
+
+  //getters
+  isAdmin: () => {
+    const  roles  = get().user?.roles || [];
+    return roles.includes("admin");
+  },
+
+
+
+
+
+
 
   //acciones
   login: async (email, password) => {
