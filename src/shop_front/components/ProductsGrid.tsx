@@ -11,27 +11,24 @@ interface Props {
 }
 
 export const ProductsGrid = ({ products }: Props) => {
+  const [showFilters, setShowFilters] = useState(false);
 
+  const [searchParams, setSearchParams] = useSearchParams();
 
-    const [showFilters, setShowFilters] =  useState(false);
+  //cambiar el estado de la vista
+  const viewMode = searchParams.get("view") || "grid";
 
-
-    const [searchParams, setSearchParams] = useSearchParams();
-
-    //cambiar el estado de la vista
-    const viewMode = searchParams.get("view") || "grid";
-
-
-
-    const handleViewModeChange = (mode: string) => {
-      searchParams.set("view", mode)
-      setSearchParams(searchParams);
-    }
-
+  const handleViewModeChange = (mode: string) => {
+    searchParams.set("view", mode);
+    setSearchParams(searchParams);
+  };
 
   return (
     <>
-      <section id="products-section" className="py-8 sm:py-10 md:py-12 px-4 lg:px-8">
+      <section
+        id="products-section"
+        className="py-8 sm:py-10 md:py-12 px-4 lg:px-8"
+      >
         <div className="container mx-auto">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8 md:mb-10">
             <div className="flex items-center gap-2 sm:gap-4">

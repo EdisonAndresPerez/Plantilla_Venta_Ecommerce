@@ -59,7 +59,7 @@ export const AdminProductFormPage = () => {
 
   const handleSave = () => {
     console.log("Saving product:", product);
-    // TODO: Implement save logic
+   
   };
 
   const handleCancel = () => {
