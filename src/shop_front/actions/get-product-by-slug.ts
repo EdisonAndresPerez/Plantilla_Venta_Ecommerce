@@ -1,9 +1,9 @@
 import { tesloApi } from "@/api/tesloApi";
 import type { Product } from "@/interfaces/product.interface";
 
-export const getProductBySlug = async (slug: string) => {
+export const getProductById = async (id: string) => {
   try {
-    const { data } = await tesloApi.get<Product>(`/products/${slug}`);
+    const { data } = await tesloApi.get<Product>(`/products/${id}`);
 
     // Mapear las imágenes con la URL completa
     const productWithImagesUrl = {

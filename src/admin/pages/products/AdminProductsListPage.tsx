@@ -1,10 +1,10 @@
-import { useRef, useState } from "react";
+import { useRef, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Plus, Pencil, Trash2 } from "lucide-react";
 import { CustomPagination } from "@/components/custom/CustomPagination";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useProducts } from "@/shop_front/hooks/useProducts";
 import { Loading } from "@/components/Loading";
 import { formatPrice } from "@/lib/currency-formatter";
@@ -26,47 +26,65 @@ const getProductStatus = (stock: number) => {
 
 export const AdminProductsListPage = () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { data, isLoading } = useProducts();
+
+  // Obtener el término de búsqueda de la URL
+  const searchQuery = searchParams.get("search") || "";
+
+  // Sincronizar el input con el valor de la URL
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.value = searchQuery;
+    }
+  }, [searchQuery]);
 
   const handleSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== "Enter") return;
 
-    const query = inputRef.current?.value;
+    const query = inputRef.current?.value.trim() || "";
 
     if (!query) {
+      // Si no hay búsqueda, volver a la página 1 sin parámetros
       navigate("/admin/products");
       return;
     }
-    navigate(`/admin/products?search=${query}`);
+    // Navegar con el parámetro de búsqueda y resetear a página 1
+    navigate(`/admin/products?search=${encodeURIComponent(query)}`);
+  };
+
+  const handleClearSearch = () => {
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+    navigate("/admin/products");
   };
 
   if (isLoading) {
     return <Loading />;
   }
 
-  // Mapeo de productos de la API
+  // Mapeo de productos de la API (sin filtrado local, la API ya filtró)
   const apiProducts = data?.products || [];
 
-  const filteredProducts = apiProducts
-    .filter((product) =>
-      product.title.toLowerCase().includes(searchTerm.toLowerCase()),
-    )
-    .map((product) => ({
-      id: product.id,
-      name: product.title,
-      slug: product.slug,
-      category: categoryMap[product.gender] || product.gender,
-      price: product.price,
-      stock: product.stock,
-      sizes:
-        product.sizes.length > 3
-          ? [...product.sizes.slice(0, 3), `+${product.sizes.length - 3}`]
-          : product.sizes,
-      status: getProductStatus(product.stock),
-      image: product.images[0] || "",
-    }));
+  const products = apiProducts.map((product) => ({
+    id: product.id,
+    name: product.title,
+    slug: product.slug,
+    category: categoryMap[product.gender] || product.gender,
+    price: product.price,
+    stock: product.stock,
+    sizes:
+      product.sizes.length > 3
+        ? [...product.sizes.slice(0, 3), `+${product.sizes.length - 3}`]
+        : product.sizes,
+    status: getProductStatus(product.stock),
+    image: product.images[0] || "",
+  }));
+
+  // Usar el contador real de la API
+  const totalProducts = data?.count || 0;
 
   return (
     <div className="space-y-6">
@@ -77,7 +95,8 @@ export const AdminProductsListPage = () => {
             PRODUCTOS
           </h1>
           <p className="mt-1 font-mono text-sm text-muted-foreground">
-            {filteredProducts.length} productos en catálogo
+            {totalProducts} productos en catálogo
+            {searchQuery && ` (${products.length} en esta página)`}
           </p>
         </div>
         <Button
@@ -92,17 +111,22 @@ export const AdminProductsListPage = () => {
 
       {/* Search */}
       <div className="relative w-full sm:max-w-sm">
-
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          placeholder="Buscar productos..."
+          placeholder="Buscar productos... (Presiona Enter)"
           ref={inputRef}
           onKeyDown={handleSearch}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          defaultValue={searchQuery}
           className="border-border bg-card pl-10 font-mono text-sm"
         />
-
+        {searchQuery && (
+          <button
+            onClick={handleClearSearch}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       {/* Products Table */}
@@ -139,7 +163,18 @@ export const AdminProductsListPage = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filteredProducts.map((product) => (
+                {products.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="px-6 py-12 text-center">
+                      <p className="text-muted-foreground font-mono">
+                        {searchQuery
+                          ? `No se encontraron productos con "${searchQuery}"`
+                          : "No hay productos disponibles"}
+                      </p>
+                    </td>
+                  </tr>
+                ) : (
+                  products.map((product) => (
                   <tr
                     key={product.id}
                     className="hover:bg-muted/50 transition-colors"
@@ -216,7 +251,7 @@ export const AdminProductsListPage = () => {
                           size="icon"
                           variant="ghost"
                           onClick={() =>
-                            navigate(`/admin/products/${product.slug}`)
+                            navigate(`/admin/products/${product.id}`)
                           }
                           className="h-8 w-8 hover:bg-muted hover:text-foreground"
                         >
@@ -232,7 +267,8 @@ export const AdminProductsListPage = () => {
                       </div>
                     </td>
                   </tr>
-                ))}
+                  ))
+                )}
               </tbody>
             </table>
           </div>
