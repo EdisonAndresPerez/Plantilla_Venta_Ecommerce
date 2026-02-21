@@ -1,87 +1,72 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Plus, Pencil, Trash2 } from "lucide-react";
 import { CustomPagination } from "@/components/custom/CustomPagination";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useProducts } from "@/shop_front/hooks/useProducts";
+import { Loading } from "@/components/Loading";
+import { formatPrice } from "@/lib/currency-formatter";
 
-const products = [
-  {
-    id: 1,
-    name: "TACTICAL CARGO PANTS",
-    slug: "tactical-cargo-pants",
-    category: "Pantalones",
-    price: "$89.99",
-    stock: 24,
-    sizes: ["S", "M", "L", "+1"],
-    status: "ACTIVO",
-    image: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=100&h=100&fit=crop",
-  },
-  {
-    id: 2,
-    name: "URBAN BOMBER JACKET",
-    slug: "urban-bomber-jacket",
-    category: "Chaquetas",
-    price: "$159.99",
-    stock: 12,
-    sizes: ["M", "L", "XL"],
-    status: "ACTIVO",
-    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=100&h=100&fit=crop",
-  },
-  {
-    id: 3,
-    name: "STEALTH HOODIE",
-    slug: "stealth-hoodie",
-    category: "Hoodies",
-    price: "$74.99",
-    stock: 0,
-    sizes: ["S", "M", "L"],
-    status: "AGOTADO",
-    image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=100&h=100&fit=crop",
-  },
-  {
-    id: 4,
-    name: "MIDNIGHT TEE",
-    slug: "midnight-tee",
-    category: "Camisetas",
-    price: "$34.99",
-    stock: 56,
-    sizes: ["XS", "S", "M", "+3"],
-    status: "ACTIVO",
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=100&h=100&fit=crop",
-  },
-  {
-    id: 5,
-    name: "COMBAT BOOTS",
-    slug: "combat-boots",
-    category: "Calzado",
-    price: "$199.99",
-    stock: 8,
-    sizes: ["40", "41", "42", "+2"],
-    status: "ACTIVO",
-    image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=100&h=100&fit=crop",
-  },
-  {
-    id: 6,
-    name: "RESISTANCE VEST",
-    slug: "resistance-vest",
-    category: "Chaquetas",
-    price: "$129.99",
-    stock: 3,
-    sizes: ["M", "L"],
-    status: "STOCK BAJO",
-    image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=100&h=100&fit=crop",
-  },
-];
+// Mapeo de categorías
+const categoryMap: Record<string, string> = {
+  camisetas: "Camisetas",
+  sudaderas: "Sudaderas",
+  chaquetas: "Chaquetas",
+  accesorios: "Accesorios",
+};
+
+// Función para calcular el estado basado en el stock
+const getProductStatus = (stock: number) => {
+  if (stock === 0) return "AGOTADO";
+  if (stock < 10) return "STOCK BAJO";
+  return "ACTIVO";
+};
 
 export const AdminProductsListPage = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const { data, isLoading } = useProducts();
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== "Enter") return;
+
+    const query = inputRef.current?.value;
+
+    if (!query) {
+      navigate("/admin/products");
+      return;
+    }
+    navigate(`/admin/products?search=${query}`);
+  };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  // Mapeo de productos de la API
+  const apiProducts = data?.products || [];
+
+  const filteredProducts = apiProducts
+    .filter((product) =>
+      product.title.toLowerCase().includes(searchTerm.toLowerCase()),
+    )
+    .map((product) => ({
+      id: product.id,
+      name: product.title,
+      slug: product.slug,
+      category: categoryMap[product.gender] || product.gender,
+      price: product.price,
+      stock: product.stock,
+      sizes:
+        product.sizes.length > 3
+          ? [...product.sizes.slice(0, 3), `+${product.sizes.length - 3}`]
+          : product.sizes,
+      status: getProductStatus(product.stock),
+      image: product.images[0] || "",
+    }));
 
   return (
     <div className="space-y-6">
@@ -95,7 +80,7 @@ export const AdminProductsListPage = () => {
             {filteredProducts.length} productos en catálogo
           </p>
         </div>
-        <Button 
+        <Button
           onClick={() => navigate("/admin/products/new")}
           className="gap-2 bg-yellow-500 font-mono font-semibold uppercase tracking-wide text-black hover:bg-yellow-600"
         >
@@ -107,13 +92,17 @@ export const AdminProductsListPage = () => {
 
       {/* Search */}
       <div className="relative w-full sm:max-w-sm">
+
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           placeholder="Buscar productos..."
+          ref={inputRef}
+          onKeyDown={handleSearch}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="border-border bg-card pl-10 font-mono text-sm"
         />
+
       </div>
 
       {/* Products Table */}
@@ -170,10 +159,19 @@ export const AdminProductsListPage = () => {
                           className="h-10 w-10 rounded-lg object-cover border-2 border-border sm:hidden"
                         />
                         <div className="min-w-0 flex-1">
-                          <div className="truncate max-w-[150px] sm:max-w-[200px] lg:max-w-none">{product.name}</div>
+                          <div className="truncate max-w-[150px] sm:max-w-[200px] lg:max-w-none underline">
+                            <Link
+                              to={`/admin/products/${product.id}`}
+                              className="text-foreground transition-colors duration-200 hover:text-blue-500 cursor-pointer"
+                            >
+                              {product.name}
+                            </Link>
+                          </div>
                           <div className="flex flex-wrap gap-1 text-xs text-muted-foreground md:hidden mt-1">
                             <span>{product.category}</span>
-                            <span className="lg:hidden">• Stock: {product.stock}</span>
+                            <span className="lg:hidden">
+                              • Stock: {product.stock}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -182,7 +180,7 @@ export const AdminProductsListPage = () => {
                       {product.category}
                     </td>
                     <td className="px-4 py-4 font-mono text-sm font-semibold text-foreground sm:px-6">
-                      {product.price}
+                      {formatPrice(product.price)}
                     </td>
                     <td className="hidden px-6 py-4 font-mono text-sm text-foreground lg:table-cell">
                       {product.stock}
@@ -205,8 +203,8 @@ export const AdminProductsListPage = () => {
                           product.status === "ACTIVO"
                             ? "bg-green-500/10 text-green-500"
                             : product.status === "AGOTADO"
-                            ? "bg-red-500/10 text-red-500"
-                            : "bg-yellow-500/10 text-yellow-500"
+                              ? "bg-red-500/10 text-red-500"
+                              : "bg-yellow-500/10 text-yellow-500"
                         }`}
                       >
                         {product.status}
@@ -217,7 +215,9 @@ export const AdminProductsListPage = () => {
                         <Button
                           size="icon"
                           variant="ghost"
-                          onClick={() => navigate(`/admin/products/${product.slug}`)}
+                          onClick={() =>
+                            navigate(`/admin/products/${product.slug}`)
+                          }
                           className="h-8 w-8 hover:bg-muted hover:text-foreground"
                         >
                           <Pencil className="h-4 w-4" />
@@ -237,12 +237,8 @@ export const AdminProductsListPage = () => {
             </table>
           </div>
         </CardContent>
-
-    
       </Card>
-          <CustomPagination totalPages={10}/>
-
-    
+      <CustomPagination totalPages={data?.pages || 0} />
     </div>
   );
 };

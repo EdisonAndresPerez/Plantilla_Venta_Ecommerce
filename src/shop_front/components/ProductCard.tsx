@@ -2,6 +2,7 @@ import { useStoreAuth } from "@/auth/store/auth.store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Size } from "@/interfaces/product.interface";
+import { formatPrice } from "@/lib/currency-formatter";
 import { ShoppingBag, Heart } from "lucide-react";
 import { useState } from "react";
 
@@ -101,7 +102,7 @@ const ProductCard = ({
 
           <div className="flex items-center justify-between">
             <p className="text-xl sm:text-2xl font-bold text-gradient">
-              ${price}
+              {formatPrice(price)}
             </p>
             <div className="flex gap-1">
               {["bg-foreground", "bg-muted-foreground", "bg-primary"].map(

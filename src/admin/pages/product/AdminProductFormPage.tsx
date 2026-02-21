@@ -1,7 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Plus, Upload, Tag, SaveAll } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { getProductBySlug } from "@/shop_front/actions/get-product-by-slug";
+import { Loading } from "@/components/Loading";
 
 interface Product {
   id: string;
@@ -24,28 +27,10 @@ const emptyProduct: Product = {
   slug: "",
   stock: 0,
   sizes: [],
-  gender: "men",
+  gender: "camisetas",
   tags: [],
   images: [],
-};
-
-const mockProduct: Product = {
-  id: "376e23ed-df37-4f88-8f84-4561da5c5d46",
-  title: "Men's Raven Lightweight Hoodie",
-  price: 115,
-  description:
-    "Introducing the Tesla Raven Collection. The Men's Raven Lightweight Hoodie has a premium, relaxed silhouette made from a sustainable bamboo cotton blend. The hoodie features subtle thermoplastic polyurethane Tesla logos across the chest and on the sleeve with a french terry interior for versatility in any season. Made from 70% bamboo and 30% cotton.",
-  slug: "men-raven-lightweight-hoodie",
-  stock: 10,
-  sizes: ["XS", "S", "M", "L", "XL", "XXL"],
-  gender: "men",
-  tags: ["hoodie", "raven", "sustainable"],
-  images: [
-    "https://placehold.co/250x250?text=Image+1",
-    "https://placehold.co/250x250?text=Image+2",
-    "https://placehold.co/250x250?text=Image+3",
-    "https://placehold.co/250x250?text=Image+4",
-  ],
+  user: {} as any,
 };
 
 export const AdminProductFormPage = () => {
@@ -58,15 +43,27 @@ export const AdminProductFormPage = () => {
     ? "Aquí puedes crear un nuevo producto."
     : "Aquí puedes editar el producto.";
 
-  // Initialize product: empty for new, mock data for editing
-  const [product, setProduct] = useState<Product>(
-    isNewProduct ? emptyProduct : mockProduct
-  );
+  // Cargar producto desde la API si no es nuevo
+  const { data: productData, isLoading } = useQuery({
+    queryKey: ["product", slug],
+    queryFn: () => getProductBySlug(slug!),
+    enabled: !isNewProduct && !!slug,
+  });
+
+  // Initialize product: empty for new, data from API for editing
+  const [product, setProduct] = useState<Product>(emptyProduct);
+
+  // Actualizar el producto cuando los datos se cargan
+  useEffect(() => {
+    if (productData && !isNewProduct) {
+      setProduct(productData);
+    }
+  }, [productData, isNewProduct]);
 
   const [newTag, setNewTag] = useState("");
   const [dragActive, setDragActive] = useState(false);
 
-  const availableSizes = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
+  const availableSizes = ["XS", "S", "M", "L", "XL", "XXL"];
 
   const handleInputChange = (field: keyof Product, value: string | number) => {
     setProduct((prev) => ({ ...prev, [field]: value }));
@@ -138,6 +135,11 @@ export const AdminProductFormPage = () => {
   const handleCancel = () => {
     navigate("/admin/products");
   };
+
+  // Mostrar loading mientras se carga el producto
+  if (isLoading && !isNewProduct) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -234,17 +236,17 @@ export const AdminProductFormPage = () => {
 
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  Género del producto
+                  Categoría del producto
                 </label>
                 <select
                   value={product.gender}
                   onChange={(e) => handleInputChange("gender", e.target.value)}
                   className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-background"
                 >
-                  <option value="men">Hombre</option>
-                  <option value="women">Mujer</option>
-                  <option value="unisex">Unisex</option>
-                  <option value="kids">Niño</option>
+                  <option value="camisetas">Camisetas</option>
+                  <option value="sudaderas">Sudaderas</option>
+                  <option value="chaquetas">Chaquetas</option>
+                  <option value="accesorios">Accesorios</option>
                 </select>
               </div>
 
