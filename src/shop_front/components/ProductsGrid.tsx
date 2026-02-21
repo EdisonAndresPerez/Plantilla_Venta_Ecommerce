@@ -3,14 +3,16 @@ import type { Product } from "@/interfaces/product.interface";
 import { Filter, Grid, List } from "lucide-react";
 import ProductCard from "./ProductCard";
 import ProductFilter from "./ProductFilter";
+import { ProductCardSkeleton } from "./ProductCardSkeleton";
 import { useSearchParams } from "react-router";
 import { useState } from "react";
 
 interface Props {
   products: Product[];
+  isLoading?: boolean;
 }
 
-export const ProductsGrid = ({ products }: Props) => {
+export const ProductsGrid = ({ products, isLoading = false }: Props) => {
   const [showFilters, setShowFilters] = useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -106,17 +108,24 @@ export const ProductsGrid = ({ products }: Props) => {
                     : "space-y-6"
                 }
               >
-                {products.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    id={product.id}
-                    name={product.title}
-                    price={product.price}
-                    image={product.images[0]}
-                    category={product.gender}
-                    size={product.sizes}
-                  />
-                ))}
+                {isLoading ? (
+                  // Mostrar skeletons para mantener el espacio del grid
+                  Array.from({ length: 9 }).map((_, index) => (
+                    <ProductCardSkeleton key={`skeleton-${index}`} />
+                  ))
+                ) : (
+                  products.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      id={product.id}
+                      name={product.title}
+                      price={product.price}
+                      image={product.images[0]}
+                      category={product.gender}
+                      size={product.sizes}
+                    />
+                  ))
+                )}
               </div>
             </div>
           </div>

@@ -8,7 +8,7 @@ import { useProducts } from "@/shop_front/hooks/useProducts";
 
 export const HomePage = () => {
 
-const { data } = useProducts()
+const { data, isFetching } = useProducts()
 
 
 
@@ -53,7 +53,7 @@ const { data } = useProducts()
       <CustomjumStats stats={stats} />
 
       {/* Products Grid */}
-      <ProductsGrid products={data?.products || []} />
+      <ProductsGrid products={data?.products || []} isLoading={isFetching} />
 
       <CustomPagination totalPages={data?.pages || 0} />
       <CustomPromotion />
