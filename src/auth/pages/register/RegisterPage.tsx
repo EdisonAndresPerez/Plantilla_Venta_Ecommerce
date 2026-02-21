@@ -1,32 +1,53 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Lock, Mail, ArrowRight, Loader2, User } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Lock,
+  Mail,
+  ArrowRight,
+  Loader2,
+  User,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { AuthContainer } from "@/auth/components/AuthContainer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useStoreAuth } from "@/auth/store/auth.store";
 
 export const RegisterPage = () => {
+  const { register } = useStoreAuth();
+
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate loading
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const fullName = formData.get("fullName") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    const isRegisterValid = await register(fullName, email, password);
+
     setIsLoading(false);
-    
-    toast.success("Cuenta creada", {
-      description: "Tu cuenta ha sido creada exitosamente.",
-    });
+
+    if (isRegisterValid) {
+      toast.success("Cuenta creada", {
+        description: "Tu cuenta ha sido creada exitosamente.",
+      });
+      navigate("/");
+    } else {
+      toast.error("Error al crear cuenta", {
+        description: "Revisa los datos e intenta de nuevo.",
+      });
+    }
   };
 
   return (
@@ -57,8 +78,7 @@ export const RegisterPage = () => {
               <Input
                 type="text"
                 placeholder="Tu nombre"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                name="fullName"
                 className="bg-bunker-dark/50 border-bunker-border/30 text-bunker-light placeholder:text-bunker-gray/50 h-12 rounded-xl pl-11 focus-visible:ring-bunker-border/50 focus-visible:ring-offset-0"
                 required
               />
@@ -74,8 +94,7 @@ export const RegisterPage = () => {
               <Input
                 type="email"
                 placeholder="tu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="email"
                 className="bg-bunker-dark/50 border-bunker-border/30 text-bunker-light placeholder:text-bunker-gray/50 h-12 rounded-xl pl-11 focus-visible:ring-bunker-border/50 focus-visible:ring-offset-0"
                 required
               />
@@ -91,8 +110,7 @@ export const RegisterPage = () => {
               <Input
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                name="password"
                 className="bg-bunker-dark/50 border-bunker-border/30 text-bunker-light placeholder:text-bunker-gray/50 h-12 rounded-xl pl-11 pr-11 focus-visible:ring-bunker-border/50 focus-visible:ring-offset-0"
                 required
               />
