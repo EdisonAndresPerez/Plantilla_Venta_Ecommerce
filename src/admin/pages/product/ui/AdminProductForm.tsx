@@ -45,6 +45,7 @@ export const AdminProductForm = ({
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    watch,
   } = useForm<FormData>({
     defaultValues: {
       title: product.title,
@@ -55,6 +56,9 @@ export const AdminProductForm = ({
       description: product.description,
     },
   });
+
+  // Observar cambios en el stock para actualizar el DOM en tiempo real
+  const currentStock = watch('stock');
 
   // Sincronizar valores del formulario cuando el producto cambia
   useEffect(() => {
@@ -402,7 +406,7 @@ export const AdminProductForm = ({
                         <button
                           type="button"
                           onClick={() => removeSize(size)}
-                          className="ml-2 text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                          className=" cursor-pointer ml-2 text-blue-600 hover:text-blue-800 transition-colors duration-200"
                         >
                           <X className="h-3 w-3" />
                         </button>
@@ -466,7 +470,7 @@ export const AdminProductForm = ({
                         <button
                           type="button"
                           onClick={() => removeTag(tag)}
-                          className="ml-2 text-green-600 hover:text-green-800 transition-colors duration-200"
+                          className="ml-2 cursor-pointer text-green-600 hover:text-green-800 transition-colors duration-200"
                         >
                           <X className="h-3 w-3" />
                         </button>
@@ -592,16 +596,16 @@ export const AdminProductForm = ({
                   </span>
                   <span
                     className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      product.stock > 5
+                      currentStock > 5
                         ? 'bg-green-100 text-green-800'
-                        : product.stock > 0
+                        : currentStock > 0
                         ? 'bg-yellow-100 text-yellow-800'
                         : 'bg-red-100 text-red-800'
                     }`}
                   >
-                    {product.stock > 5
+                    {currentStock > 5
                       ? 'En stock'
-                      : product.stock > 0
+                      : currentStock > 0
                       ? 'Bajo stock'
                       : 'Sin stock'}
                   </span>
