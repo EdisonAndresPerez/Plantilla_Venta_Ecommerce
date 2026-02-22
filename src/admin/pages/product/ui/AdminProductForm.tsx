@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import type { Product, Size } from "@/interfaces/product.interface";
-import { X, SaveAll, Tag, Plus, Upload } from "lucide-react";
-import { useState } from "react";
+import { X, SaveAll, Tag, Plus, Upload, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 interface Props {
@@ -18,6 +18,15 @@ interface Props {
 
 const availableSizes: Size[] = ["XS", "S", "M", "L", "XL", "XXL"];
 
+interface FormData {
+  title: string;
+  price: number;
+  stock: number;
+  slug: string;
+  gender: string;
+  description: string;
+}
+
 export const AdminProductForm = ({
   title,
   subTitle,
@@ -29,12 +38,46 @@ export const AdminProductForm = ({
   onSave,
   onCancel,
 }: Props) => {
-
-
   const [dragActive, setDragActive] = useState(false);
-  const { register } = useForm({
-    defaultValues: product,
-  })
+  
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<FormData>({
+    defaultValues: {
+      title: product.title,
+      price: product.price,
+      stock: product.stock,
+      slug: product.slug,
+      gender: product.gender,
+      description: product.description,
+    },
+  });
+
+  // Sincronizar valores del formulario cuando el producto cambia
+  useEffect(() => {
+    reset({
+      title: product.title,
+      price: product.price,
+      stock: product.stock,
+      slug: product.slug,
+      gender: product.gender,
+      description: product.description,
+    });
+  }, [product, reset]);
+
+  const onSubmit = (data: FormData) => {
+    // Actualizar todos los campos antes de guardar
+    Object.entries(data).forEach(([key, value]) => {
+      onInputChange(key as keyof Product, value);
+    });
+    // Pequeño delay para asegurar que el estado se actualice
+    setTimeout(() => {
+      onSave();
+    }, 100);
+  };
 
 
   const addTag = () => {
@@ -90,7 +133,7 @@ export const AdminProductForm = ({
   };
 
   return (
-    <>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex justify-between items-center">
         <div>
           <h1 className="font-mono text-2xl font-bold uppercase tracking-wider text-foreground sm:text-3xl">
@@ -101,17 +144,34 @@ export const AdminProductForm = ({
           </p>
         </div>
         <div className="flex justify-end mb-10 gap-4">
-          <Button variant="outline" onClick={onCancel}>
+          <Button type="button" variant="outline" onClick={onCancel}>
             <X className="w-4 h-4 mr-2" />
             Cancelar
           </Button>
 
-          <Button onClick={onSave}>
+          <Button type="submit" disabled={isSubmitting}>
             <SaveAll className="w-4 h-4 mr-2" />
-            Guardar cambios
+            {isSubmitting ? "Guardando..." : "Guardar cambios"}
           </Button>
         </div>
       </div>
+
+      {/* Banner de errores de validación */}
+      {Object.keys(errors).length > 0 && (
+        <div className="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded-lg">
+          <div className="flex">
+            <AlertCircle className="h-5 w-5 text-red-400 mr-3" />
+            <div>
+              <h3 className="text-sm font-medium text-red-800">
+                Hay {Object.keys(errors).length} error(es) en el formulario
+              </h3>
+              <p className="mt-1 text-sm text-red-700">
+                Por favor corrige los campos marcados antes de guardar.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -126,92 +186,185 @@ export const AdminProductForm = ({
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Título del producto
+                    Título del producto *
                   </label>
                   <input
                     type="text"
-                   // value={product.title}
-                   {...register("title")}
-                   // onChange={(e) => onInputChange("title", e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                    placeholder="Título del producto"
+                    {...register("title", {
+                      required: "El título es obligatorio",
+                      minLength: {
+                        value: 3,
+                        message: "El título debe tener al menos 3 caracteres",
+                      },
+                      maxLength: {
+                        value: 100,
+                        message: "El título no puede exceder 100 caracteres",
+                      },
+                    })}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                      errors.title ? "border-red-500" : "border-slate-300"
+                    }`}
+                    placeholder="Ej: Sudadera Premium con Capucha"
                   />
+                  {errors.title && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                      <AlertCircle className="h-4 w-4" />
+                      {errors.title.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Precio ($)
+                      Precio ($) *
                     </label>
                     <input
                       type="number"
-                      value={product.price}
-                      onChange={(e) =>
-                        onInputChange("price", parseFloat(e.target.value) || 0)
-                      }
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                      placeholder="Precio del producto"
+                      step="0.01"
+                      {...register("price", {
+                        required: "El precio es obligatorio",
+                        min: {
+                          value: 0.01,
+                          message: "El precio debe ser mayor a 0",
+                        },
+                        max: {
+                          value: 999999,
+                          message: "El precio no puede exceder 999,999",
+                        },
+                      })}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                        errors.price ? "border-red-500" : "border-slate-300"
+                      }`}
+                      placeholder="Ej: 45.99"
                     />
+                    {errors.price && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle className="h-4 w-4" />
+                        {errors.price.message}
+                      </p>
+                    )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Stock del producto
+                      Stock del producto *
                     </label>
                     <input
                       type="number"
-                      value={product.stock}
-                      onChange={(e) =>
-                        onInputChange("stock", parseInt(e.target.value) || 0)
-                      }
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                      placeholder="Stock del producto"
+                      {...register("stock", {
+                        required: "El stock es obligatorio",
+                        min: {
+                          value: 0,
+                          message: "El stock no puede ser negativo",
+                        },
+                        max: {
+                          value: 99999,
+                          message: "El stock no puede exceder 99,999",
+                        },
+                        valueAsNumber: true,
+                      })}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                        errors.stock ? "border-red-500" : "border-slate-300"
+                      }`}
+                      placeholder="Ej: 100"
                     />
+                    {errors.stock && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle className="h-4 w-4" />
+                        {errors.stock.message}
+                      </p>
+                    )}
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Slug del producto
+                    Slug del producto *
                   </label>
                   <input
                     type="text"
-                    value={product.slug}
-                    onChange={(e) => onInputChange("slug", e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                    placeholder="Slug del producto"
+                    {...register("slug", {
+                      required: "El slug es obligatorio",
+                      pattern: {
+                        value: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+                        message: "El slug solo puede contener letras minúsculas, números y guiones",
+                      },
+                      minLength: {
+                        value: 3,
+                        message: "El slug debe tener al menos 3 caracteres",
+                      },
+                    })}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                      errors.slug ? "border-red-500" : "border-slate-300"
+                    }`}
+                    placeholder="Ej: sudadera-premium-capucha"
                   />
+                  {errors.slug && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                      <AlertCircle className="h-4 w-4" />
+                      {errors.slug.message}
+                    </p>
+                  )}
+                  <p className="mt-1 text-xs text-slate-500">
+                    URL amigable para el producto (solo minúsculas y guiones)
+                  </p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Categoría del producto
+                    Categoría del producto *
                   </label>
                   <select
-                    value={product.gender}
-                    onChange={(e) => onInputChange("gender", e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    {...register("gender", {
+                      required: "La categoría es obligatoria",
+                    })}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                      errors.gender ? "border-red-500" : "border-slate-300"
+                    }`}
                   >
+                    <option value="">Selecciona una categoría</option>
                     <option value="camisetas">Camisetas</option>
                     <option value="sudaderas">Sudaderas</option>
                     <option value="chaquetas">Chaquetas</option>
                     <option value="accesorios">Accesorios</option>
                   </select>
+                  {errors.gender && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                      <AlertCircle className="h-4 w-4" />
+                      {errors.gender.message}
+                    </p>
+                  )}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Descripción del producto
+                    Descripción del producto *
                   </label>
                   <textarea
-                    value={product.description}
-                    onChange={(e) =>
-                      onInputChange("description", e.target.value)
-                    }
+                    {...register("description", {
+                      required: "La descripción es obligatoria",
+                      minLength: {
+                        value: 10,
+                        message: "La descripción debe tener al menos 10 caracteres",
+                      },
+                      maxLength: {
+                        value: 500,
+                        message: "La descripción no puede exceder 500 caracteres",
+                      },
+                    })}
                     rows={5}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
-                    placeholder="Descripción del producto"
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none ${
+                      errors.description ? "border-red-500" : "border-slate-300"
+                    }`}
+                    placeholder="Describe las características principales del producto..."
                   />
+                  {errors.description && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                      <AlertCircle className="h-4 w-4" />
+                      {errors.description.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -223,6 +376,17 @@ export const AdminProductForm = ({
               </h2>
 
               <div className="space-y-4">
+                {product.sizes.length === 0 && (
+                  <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-lg mb-4">
+                    <div className="flex items-center">
+                      <AlertCircle className="h-4 w-4 text-yellow-400 mr-2" />
+                      <p className="text-sm text-yellow-700">
+                        Recomendado: Agrega al menos una talla para el producto
+                      </p>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="flex flex-wrap gap-2">
                   {product.sizes.length === 0 ? (
                     <p className="text-sm text-slate-500">
@@ -236,6 +400,7 @@ export const AdminProductForm = ({
                       >
                         {size}
                         <button
+                          type="button"
                           onClick={() => removeSize(size)}
                           className="ml-2 text-blue-600 hover:text-blue-800 transition-colors duration-200"
                         >
@@ -252,6 +417,7 @@ export const AdminProductForm = ({
                   </span>
                   {availableSizes.map((size) => (
                     <button
+                      type="button"
                       key={size}
                       onClick={() => addSize(size)}
                       disabled={product.sizes.includes(size)}
@@ -275,6 +441,17 @@ export const AdminProductForm = ({
               </h2>
 
               <div className="space-y-4">
+                {product.tags.length === 0 && (
+                  <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-lg mb-4">
+                    <div className="flex items-center">
+                      <AlertCircle className="h-4 w-4 text-yellow-400 mr-2" />
+                      <p className="text-sm text-yellow-700">
+                        Recomendado: Agrega etiquetas para mejorar la búsqueda del producto
+                      </p>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="flex flex-wrap gap-2">
                   {product.tags.length === 0 ? (
                     <p className="text-sm text-slate-500">No hay etiquetas</p>
@@ -287,6 +464,7 @@ export const AdminProductForm = ({
                         <Tag className="h-3 w-3 mr-1" />
                         {tag}
                         <button
+                          type="button"
                           onClick={() => removeTag(tag)}
                           className="ml-2 text-green-600 hover:text-green-800 transition-colors duration-200"
                         >
@@ -302,11 +480,16 @@ export const AdminProductForm = ({
                     type="text"
                     value={newTag}
                     onChange={(e) => setNewTag(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && addTag()}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addTag();
+                      }
+                    }}
                     placeholder="Añadir nueva etiqueta..."
                     className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   />
-                  <Button onClick={addTag} className="px-4 py-2 rounded-lg">
+                  <Button type="button" onClick={addTag} className="px-4 py-2 rounded-lg">
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
@@ -372,7 +555,10 @@ export const AdminProductForm = ({
                           className="w-full h-full object-cover rounded-lg"
                         />
                       </div>
-                      <button className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <button 
+                        type="button"
+                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                      >
                         <X className="h-3 w-3" />
                       </button>
                       <p className="mt-1 text-xs text-slate-600 truncate">
@@ -443,6 +629,6 @@ export const AdminProductForm = ({
           </div>
         </div>
       </div>
-    </>
+    </form>
   );
 };
