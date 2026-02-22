@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import type { Product, Size } from "@/interfaces/product.interface";
 import { X, SaveAll, Tag, Plus, Upload } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface Props {
   title: string;
@@ -28,8 +29,13 @@ export const AdminProductForm = ({
   onSave,
   onCancel,
 }: Props) => {
-    console.log({product})
+
+
   const [dragActive, setDragActive] = useState(false);
+  const { register } = useForm({
+    defaultValues: product,
+  })
+
 
   const addTag = () => {
     if (newTag.trim() && !product.tags.includes(newTag.trim())) {
@@ -124,8 +130,9 @@ export const AdminProductForm = ({
                   </label>
                   <input
                     type="text"
-                    value={product.title}
-                    onChange={(e) => onInputChange("title", e.target.value)}
+                   // value={product.title}
+                   {...register("title")}
+                   // onChange={(e) => onInputChange("title", e.target.value)}
                     className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                     placeholder="Título del producto"
                   />
