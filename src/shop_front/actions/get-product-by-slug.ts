@@ -1,21 +1,32 @@
 import { tesloApi } from "@/api/tesloApi";
 import type { Product } from "@/interfaces/product.interface";
 
-export const getProductById = async (id: string) => {
-  try {
-    const { data } = await tesloApi.get<Product>(`/products/${id}`);
+export const getProductById = async (id: string): Promise<Product> => {
+  if (!id) throw new Error("ID de producto no proporcionado");
 
-    // Mapear las imágenes con la URL completa
-    const productWithImagesUrl = {
-      ...data,
-      images: data.images.map(
-        (image) => `${import.meta.env.VITE_API_URL}/files/product/${image}`,
-      ),
-    };
-
-    return productWithImagesUrl;
-  } catch (error) {
-    console.error("Error al obtener producto:", error);
-    throw new Error("No se pudo cargar el producto");
+  if (id === "new") {
+    return {
+      id: "new",
+      title: "",
+      price: 0,
+      description: "",
+      slug: "",
+      stock: 0,
+      sizes: [],
+      gender: "camisetas",
+      tags: [],
+      images: [],
+    } as unknown as Product;
   }
+
+  const { data } = await tesloApi.get<Product>(`/products/${id}`);
+  const images = data.images.map((image) => {
+    if (image.includes("http")) return image;
+    return `${import.meta.env.VITE_API_URL}/files/product/${image}`;
+  });
+
+  return {
+    ...data,
+    images,
+  };
 };

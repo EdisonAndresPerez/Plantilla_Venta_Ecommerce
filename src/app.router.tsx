@@ -92,7 +92,7 @@ export const AppRouter = createBrowserRouter([
         element: <AdminProductsListPage />,
       },
       {
-        path: "products/:slug",
+        path: "products/:id",
         element: <AdminProductFormPage />,
       },
       {

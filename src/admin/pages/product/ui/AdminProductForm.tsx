@@ -3,17 +3,14 @@ import type { Product, Size } from "@/interfaces/product.interface";
 import { X, SaveAll, Tag, Plus, Upload, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   title: string;
   subTitle: string;
   product: Product;
-  newTag: string;
-  setNewTag: (tag: string) => void;
-  onInputChange: (field: keyof Product, value: string | number) => void;
-  onArrayChange: (field: keyof Product, value: string[]) => void;
-  onSave: () => void;
-  onCancel: () => void;
+  onSubmit: (productLike: Partial<Product>) => Promise<void>;
+  isPending: boolean;
 }
 
 const availableSizes: Size[] = ["XS", "S", "M", "L", "XL", "XXL"];
@@ -31,19 +28,20 @@ export const AdminProductForm = ({
   title,
   subTitle,
   product,
-  newTag,
-  setNewTag,
-  onInputChange,
-  onArrayChange,
-  onSave,
-  onCancel,
+  onSubmit: handleFormSubmit,
+  isPending,
 }: Props) => {
+  const navigate = useNavigate();
   const [dragActive, setDragActive] = useState(false);
+  const [newTag, setNewTag] = useState("");
+  
+  // Mantener una copia editable del producto completo
+  const [editableProduct, setEditableProduct] = useState<Product>(product);
   
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     reset,
     watch,
   } = useForm<FormData>({
@@ -60,8 +58,9 @@ export const AdminProductForm = ({
   // Observar cambios en el stock para actualizar el DOM en tiempo real
   const currentStock = watch('stock');
 
-  // Sincronizar valores del formulario cuando el producto cambia
+  // Sincronizar cuando el producto del backend cambia
   useEffect(() => {
+    setEditableProduct(product);
     reset({
       title: product.title,
       price: product.price,
@@ -72,43 +71,63 @@ export const AdminProductForm = ({
     });
   }, [product, reset]);
 
-  const onSubmit = (data: FormData) => {
-    // Actualizar todos los campos antes de guardar
-    Object.entries(data).forEach(([key, value]) => {
-      onInputChange(key as keyof Product, value);
-    });
-    // Pequeño delay para asegurar que el estado se actualice
-    setTimeout(() => {
-      onSave();
-    }, 100);
+  const onSubmit = async (data: FormData) => {
+    // Combinar los datos del formulario con los arrays del producto editable
+    const productLike: Partial<Product> = {
+      title: data.title,
+      price: data.price,
+      stock: data.stock,
+      slug: data.slug,
+      gender: data.gender as Product['gender'],
+      description: data.description,
+      sizes: editableProduct.sizes,
+      tags: editableProduct.tags,
+      images: editableProduct.images,
+      id: product.id === "" ? "new" : product.id,
+    };
+    
+    await handleFormSubmit(productLike);
   };
 
 
   const addTag = () => {
-    if (newTag.trim() && !product.tags.includes(newTag.trim())) {
-      onArrayChange("tags", [...product.tags, newTag.trim()]);
+    if (newTag.trim() && !editableProduct.tags.includes(newTag.trim())) {
+      setEditableProduct({
+        ...editableProduct,
+        tags: [...editableProduct.tags, newTag.trim()]
+      });
       setNewTag("");
     }
   };
 
   const removeTag = (tagToRemove: string) => {
-    onArrayChange(
-      "tags",
-      product.tags.filter((tag) => tag !== tagToRemove),
-    );
+    setEditableProduct({
+      ...editableProduct,
+      tags: editableProduct.tags.filter((tag) => tag !== tagToRemove)
+    });
   };
 
   const addSize = (size: Size) => {
-    if (!product.sizes.includes(size)) {
-      onArrayChange("sizes", [...product.sizes, size]);
+    if (!editableProduct.sizes.includes(size)) {
+      setEditableProduct({
+        ...editableProduct,
+        sizes: [...editableProduct.sizes, size]
+      });
     }
   };
 
   const removeSize = (sizeToRemove: Size) => {
-    onArrayChange(
-      "sizes",
-      product.sizes.filter((size) => size !== sizeToRemove),
-    );
+    setEditableProduct({
+      ...editableProduct,
+      sizes: editableProduct.sizes.filter((size) => size !== sizeToRemove)
+    });
+  };
+
+  const removeImage = (imageToRemove: string) => {
+    setEditableProduct({
+      ...editableProduct,
+      images: editableProduct.images.filter((img) => img !== imageToRemove)
+    });
   };
 
   const handleDrag = (e: React.DragEvent) => {
@@ -148,14 +167,19 @@ export const AdminProductForm = ({
           </p>
         </div>
         <div className="flex justify-end mb-10 gap-4">
-          <Button type="button" variant="outline" onClick={onCancel}>
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={() => navigate("/admin/products")}
+            disabled={isPending}
+          >
             <X className="w-4 h-4 mr-2" />
             Cancelar
           </Button>
 
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="submit" disabled={isPending}>
             <SaveAll className="w-4 h-4 mr-2" />
-            {isSubmitting ? "Guardando..." : "Guardar cambios"}
+            {isPending ? "Guardando..." : "Guardar cambios"}
           </Button>
         </div>
       </div>
@@ -380,7 +404,7 @@ export const AdminProductForm = ({
               </h2>
 
               <div className="space-y-4">
-                {product.sizes.length === 0 && (
+                {editableProduct.sizes.length === 0 && (
                   <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-lg mb-4">
                     <div className="flex items-center">
                       <AlertCircle className="h-4 w-4 text-yellow-400 mr-2" />
@@ -392,12 +416,12 @@ export const AdminProductForm = ({
                 )}
                 
                 <div className="flex flex-wrap gap-2">
-                  {product.sizes.length === 0 ? (
+                  {editableProduct.sizes.length === 0 ? (
                     <p className="text-sm text-slate-500">
                       No hay tallas seleccionadas
                     </p>
                   ) : (
-                    product.sizes.map((size) => (
+                    editableProduct.sizes.map((size) => (
                       <span
                         key={size}
                         className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200"
@@ -424,9 +448,9 @@ export const AdminProductForm = ({
                       type="button"
                       key={size}
                       onClick={() => addSize(size)}
-                      disabled={product.sizes.includes(size)}
+                      disabled={editableProduct.sizes.includes(size)}
                       className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 ${
-                        product.sizes.includes(size)
+                        editableProduct.sizes.includes(size)
                           ? "bg-slate-100 text-slate-400 cursor-not-allowed"
                           : "bg-slate-200 text-slate-700 hover:bg-slate-300 cursor-pointer"
                       }`}
@@ -445,7 +469,7 @@ export const AdminProductForm = ({
               </h2>
 
               <div className="space-y-4">
-                {product.tags.length === 0 && (
+                {editableProduct.tags.length === 0 && (
                   <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-lg mb-4">
                     <div className="flex items-center">
                       <AlertCircle className="h-4 w-4 text-yellow-400 mr-2" />
@@ -457,10 +481,10 @@ export const AdminProductForm = ({
                 )}
                 
                 <div className="flex flex-wrap gap-2">
-                  {product.tags.length === 0 ? (
+                  {editableProduct.tags.length === 0 ? (
                     <p className="text-sm text-slate-500">No hay etiquetas</p>
                   ) : (
-                    product.tags.map((tag) => (
+                    editableProduct.tags.map((tag) => (
                       <span
                         key={tag}
                         className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200"
@@ -550,7 +574,7 @@ export const AdminProductForm = ({
                   Imágenes actuales
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
-                  {product.images.map((image, index) => (
+                  {editableProduct.images.map((image, index) => (
                     <div key={index} className="relative group">
                       <div className="aspect-square bg-slate-100 rounded-lg border border-slate-200 flex items-center justify-center">
                         <img
@@ -561,7 +585,8 @@ export const AdminProductForm = ({
                       </div>
                       <button 
                         type="button"
-                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        onClick={() => removeImage(image)}
+                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600"
                       >
                         <X className="h-3 w-3" />
                       </button>
@@ -616,7 +641,7 @@ export const AdminProductForm = ({
                     Imágenes
                   </span>
                   <span className="text-sm text-slate-600">
-                    {product.images.length} imágenes
+                    {editableProduct.images.length} imágenes
                   </span>
                 </div>
 
@@ -625,7 +650,7 @@ export const AdminProductForm = ({
                     Tallas disponibles
                   </span>
                   <span className="text-sm text-slate-600">
-                    {product.sizes.length} tallas
+                    {editableProduct.sizes.length} tallas
                   </span>
                 </div>
               </div>
