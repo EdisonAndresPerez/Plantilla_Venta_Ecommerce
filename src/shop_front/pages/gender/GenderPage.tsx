@@ -3,7 +3,7 @@ import { CustomJumbotron } from "@/shop_front/components/CustomJumbotron";
 import { CustomPromotion } from "@/shop_front/components/CustomPromotion";
 import { ProductsGrid } from "@/shop_front/components/ProductsGrid";
 import { useProducts } from "@/shop_front/hooks/useProducts";
-import { useParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import { useEffect, useState, useRef } from "react";
 
 
@@ -15,6 +15,8 @@ const fetchStartTimeRef = useRef<number | null>(null);
 
   const { gender } = useParams();
   const { data, isFetching } = useProducts();
+  const [searchParams] = useSearchParams();
+  const currentPage = searchParams.get("page") || "1";
 
 
   // Mantener el skeleton visible mínimo 1.8 segundos
@@ -35,7 +37,7 @@ useEffect(() => {
     
     return () => clearTimeout(timer);
   }
-}, [isFetching]);
+}, [isFetching, currentPage]);
 
  
   const genderLabelTitle =
