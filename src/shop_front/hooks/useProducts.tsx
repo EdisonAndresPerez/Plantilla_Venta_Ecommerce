@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { getProductsAction } from "../actions/get-products-action";
 import { useParams, useSearchParams } from "react-router";
 
@@ -56,5 +56,6 @@ export const useProducts = () => {
         search: search,
       }),
     refetchOnWindowFocus: false, // Evita refetch al cambiar de pestaña
+    placeholderData: keepPreviousData, // Mantiene datos anteriores mientras carga
   });
 };
