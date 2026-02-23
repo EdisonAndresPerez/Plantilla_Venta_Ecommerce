@@ -6,9 +6,12 @@ import { ProductsGrid } from "../../components/ProductsGrid";
 import { CustomPromotion } from "@/shop_front/components/CustomPromotion";
 import { useProducts } from "@/shop_front/hooks/useProducts";
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router";
 
 export const HomePage = () => {
   const { data, isFetching } = useProducts();
+  const [searchParams] = useSearchParams();
+  const currentPage = searchParams.get("page") || "1";
   const [isDelayedLoading, setIsDelayedLoading] = useState(false);
   const fetchStartTimeRef = useRef<number | null>(null);
 
@@ -30,7 +33,7 @@ export const HomePage = () => {
       
       return () => clearTimeout(timer);
     }
-  }, [isFetching]);
+  }, [isFetching, currentPage]);
 
 
 

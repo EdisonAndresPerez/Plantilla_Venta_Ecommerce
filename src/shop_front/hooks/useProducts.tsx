@@ -55,5 +55,6 @@ export const useProducts = () => {
         maxPrice: maxPrice,
         search: search,
       }),
+    refetchOnWindowFocus: false, // Evita refetch al cambiar de pestaña
   });
 };
