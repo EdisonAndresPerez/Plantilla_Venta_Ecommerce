@@ -1,133 +1,79 @@
 import { Button } from "@/components/ui/button";
 import type { Product, Size } from "@/interfaces/product.interface";
 import { X, SaveAll, Tag, Plus, Upload, AlertCircle } from "lucide-react";
-import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useRef, useState } from "react";
 
 interface Props {
   title: string;
   subTitle: string;
   product: Product;
-  onSubmit: (productLike: Partial<Product>) => Promise<void>;
   isPending: boolean;
+  onSubmit: (productLike: Partial<Product>) => Promise<void>;
 }
 
 const availableSizes: Size[] = ["XS", "S", "M", "L", "XL", "XXL"];
-
-interface FormData {
-  title: string;
-  price: number;
-  stock: number;
-  slug: string;
-  gender: string;
-  description: string;
-}
 
 export const AdminProductForm = ({
   title,
   subTitle,
   product,
-  onSubmit: handleFormSubmit,
+  onSubmit,
   isPending,
 }: Props) => {
+  console.log(product)
   const navigate = useNavigate();
   const [dragActive, setDragActive] = useState(false);
-  const [newTag, setNewTag] = useState("");
-  
-  // Mantener una copia editable del producto completo
-  const [editableProduct, setEditableProduct] = useState<Product>(product);
-  
+  const labelInputRef = useRef<HTMLInputElement>(null);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
+    getValues,
+    setValue,
     watch,
-  } = useForm<FormData>({
-    defaultValues: {
-      title: product.title,
-      price: product.price,
-      stock: product.stock,
-      slug: product.slug,
-      gender: product.gender,
-      description: product.description,
-    },
+  } = useForm({
+    defaultValues: product,
   });
 
-  // Observar cambios en el stock para actualizar el DOM en tiempo real
+  const selectedSizes = watch('sizes');
+  const selectedTags = watch('tags');
+  const selectedImages = watch('images');
   const currentStock = watch('stock');
 
-  // Sincronizar cuando el producto del backend cambia
-  useEffect(() => {
-    setEditableProduct(product);
-    reset({
-      title: product.title,
-      price: product.price,
-      stock: product.stock,
-      slug: product.slug,
-      gender: product.gender,
-      description: product.description,
-    });
-  }, [product, reset]);
-
-  const onSubmit = async (data: FormData) => {
-    // Combinar los datos del formulario con los arrays del producto editable
-    const productLike: Partial<Product> = {
-      title: data.title,
-      price: data.price,
-      stock: data.stock,
-      slug: data.slug,
-      gender: data.gender as Product['gender'],
-      description: data.description,
-      sizes: editableProduct.sizes,
-      tags: editableProduct.tags,
-      images: editableProduct.images,
-      id: product.id === "" ? "new" : product.id,
-    };
-    
-    await handleFormSubmit(productLike);
-  };
-
-
   const addTag = () => {
-    if (newTag.trim() && !editableProduct.tags.includes(newTag.trim())) {
-      setEditableProduct({
-        ...editableProduct,
-        tags: [...editableProduct.tags, newTag.trim()]
-      });
-      setNewTag("");
-    }
+    const newTag = labelInputRef.current!.value;
+    if (newTag === '') return;
+
+    const newTagSet = new Set(getValues('tags'));
+    newTagSet.add(newTag);
+    setValue('tags', Array.from(newTagSet));
+    labelInputRef.current!.value = '';
   };
 
-  const removeTag = (tagToRemove: string) => {
-    setEditableProduct({
-      ...editableProduct,
-      tags: editableProduct.tags.filter((tag) => tag !== tagToRemove)
-    });
+  const removeTag = (tag: string) => {
+    const newTagSet = new Set(getValues('tags'));
+    newTagSet.delete(tag);
+    setValue('tags', Array.from(newTagSet));
   };
 
   const addSize = (size: Size) => {
-    if (!editableProduct.sizes.includes(size)) {
-      setEditableProduct({
-        ...editableProduct,
-        sizes: [...editableProduct.sizes, size]
-      });
-    }
+    const sizeSet = new Set(getValues('sizes'));
+    sizeSet.add(size);
+    setValue('sizes', Array.from(sizeSet));
   };
 
-  const removeSize = (sizeToRemove: Size) => {
-    setEditableProduct({
-      ...editableProduct,
-      sizes: editableProduct.sizes.filter((size) => size !== sizeToRemove)
-    });
+  const removeSize = (size: Size) => {
+    const sizeSet = new Set(getValues('sizes'));
+    sizeSet.delete(size);
+    setValue('sizes', Array.from(sizeSet));
   };
 
   const removeImage = (imageToRemove: string) => {
-    setEditableProduct({
-      ...editableProduct,
-      images: editableProduct.images.filter((img) => img !== imageToRemove)
-    });
+    const currentImages = getValues('images');
+    setValue('images', currentImages.filter((img) => img !== imageToRemove));
   };
 
   const handleDrag = (e: React.DragEvent) => {
@@ -404,7 +350,7 @@ export const AdminProductForm = ({
               </h2>
 
               <div className="space-y-4">
-                {editableProduct.sizes.length === 0 && (
+                {selectedSizes.length === 0 && (
                   <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-lg mb-4">
                     <div className="flex items-center">
                       <AlertCircle className="h-4 w-4 text-yellow-400 mr-2" />
@@ -416,12 +362,12 @@ export const AdminProductForm = ({
                 )}
                 
                 <div className="flex flex-wrap gap-2">
-                  {editableProduct.sizes.length === 0 ? (
+                  {selectedSizes.length === 0 ? (
                     <p className="text-sm text-slate-500">
                       No hay tallas seleccionadas
                     </p>
                   ) : (
-                    editableProduct.sizes.map((size) => (
+                    selectedSizes.map((size) => (
                       <span
                         key={size}
                         className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200"
@@ -448,9 +394,9 @@ export const AdminProductForm = ({
                       type="button"
                       key={size}
                       onClick={() => addSize(size)}
-                      disabled={editableProduct.sizes.includes(size)}
+                      disabled={selectedSizes.includes(size)}
                       className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 ${
-                        editableProduct.sizes.includes(size)
+                        selectedSizes.includes(size)
                           ? "bg-slate-100 text-slate-400 cursor-not-allowed"
                           : "bg-slate-200 text-slate-700 hover:bg-slate-300 cursor-pointer"
                       }`}
@@ -469,7 +415,7 @@ export const AdminProductForm = ({
               </h2>
 
               <div className="space-y-4">
-                {editableProduct.tags.length === 0 && (
+                {selectedTags.length === 0 && (
                   <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-lg mb-4">
                     <div className="flex items-center">
                       <AlertCircle className="h-4 w-4 text-yellow-400 mr-2" />
@@ -481,10 +427,10 @@ export const AdminProductForm = ({
                 )}
                 
                 <div className="flex flex-wrap gap-2">
-                  {editableProduct.tags.length === 0 ? (
+                  {selectedTags.length === 0 ? (
                     <p className="text-sm text-slate-500">No hay etiquetas</p>
                   ) : (
-                    editableProduct.tags.map((tag) => (
+                    selectedTags.map((tag) => (
                       <span
                         key={tag}
                         className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200"
@@ -505,11 +451,10 @@ export const AdminProductForm = ({
 
                 <div className="flex gap-2">
                   <input
+                    ref={labelInputRef}
                     type="text"
-                    value={newTag}
-                    onChange={(e) => setNewTag(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
+                      if (e.key === "Enter" || e.key === " " || e.key === ",") {
                         e.preventDefault();
                         addTag();
                       }
@@ -574,7 +519,7 @@ export const AdminProductForm = ({
                   Imágenes actuales
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
-                  {editableProduct.images.map((image, index) => (
+                  {selectedImages.map((image, index) => (
                     <div key={index} className="relative group">
                       <div className="aspect-square bg-slate-100 rounded-lg border border-slate-200 flex items-center justify-center">
                         <img
@@ -641,7 +586,7 @@ export const AdminProductForm = ({
                     Imágenes
                   </span>
                   <span className="text-sm text-slate-600">
-                    {editableProduct.images.length} imágenes
+                    {selectedImages.length} imágenes
                   </span>
                 </div>
 
@@ -650,7 +595,7 @@ export const AdminProductForm = ({
                     Tallas disponibles
                   </span>
                   <span className="text-sm text-slate-600">
-                    {editableProduct.sizes.length} tallas
+                    {selectedSizes.length} tallas
                   </span>
                 </div>
               </div>

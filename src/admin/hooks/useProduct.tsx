@@ -1,4 +1,4 @@
-import { getProductById } from "@/shop_front/actions/get-product-by-slug";
+import { getProductById } from "@/shop_front/actions/get-product-by-id";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createUpdateProductAction } from "../actions/create-update-product.action";
 import type { Product } from "@/interfaces/product.interface";

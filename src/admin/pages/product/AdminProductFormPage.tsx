@@ -10,6 +10,8 @@ export const AdminProductFormPage = () => {
   const navigate = useNavigate();
 
   const { isLoading, isError, data: product, mutation } = useProduct(id || "");
+  //console.log({isLoading, product});
+
 
   const title = id === "new" ? "Nuevo producto" : "Editar producto";
   const subtitle = id === "new"
