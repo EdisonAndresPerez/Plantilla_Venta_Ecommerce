@@ -22,7 +22,7 @@ export const AdminProductForm = ({
   onSubmit,
   isPending,
 }: Props) => {
-  console.log(product)
+  //console.log(product)
   const navigate = useNavigate();
   const [dragActive, setDragActive] = useState(false);
   const labelInputRef = useRef<HTMLInputElement>(null);
