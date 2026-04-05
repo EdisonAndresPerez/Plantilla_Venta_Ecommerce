@@ -3,7 +3,7 @@ import type { Product, Size } from "@/interfaces/product.interface";
 import { X, SaveAll, Tag, Plus, Upload, AlertCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 interface Props {
   title: string;
@@ -24,7 +24,6 @@ export const AdminProductForm = ({
 }: Props) => {
   //console.log(product)
   const navigate = useNavigate();
-  const [dragActive, setDragActive] = useState(false);
   const labelInputRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -39,6 +38,7 @@ export const AdminProductForm = ({
   });
 
   const selectedSizes = watch('sizes');
+  //console.log(selectedSizes)
   const selectedTags = watch('tags');
   const selectedImages = watch('images');
   const currentStock = watch('stock');
@@ -76,20 +76,9 @@ export const AdminProductForm = ({
     setValue('images', currentImages.filter((img) => img !== imageToRemove));
   };
 
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  };
-
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setDragActive(false);
     const files = e.dataTransfer.files;
     console.log(files);
     // TODO: Handle file upload
@@ -100,6 +89,10 @@ export const AdminProductForm = ({
     console.log(files);
     // TODO: Handle file upload
   };
+
+
+  
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -480,14 +473,11 @@ export const AdminProductForm = ({
 
               {/* Drag & Drop Zone */}
               <div
-                className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 ${
-                  dragActive
-                    ? 'border-blue-400 bg-blue-50'
-                    : 'border-slate-300 hover:border-slate-400'
-                }`}
-                onDragEnter={handleDrag}
-                onDragLeave={handleDrag}
-                onDragOver={handleDrag}
+                className="relative border-2 border-dashed border-slate-300 hover:border-slate-400 rounded-lg p-6 text-center transition-all duration-200"
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
                 onDrop={handleDrop}
               >
                 <input
