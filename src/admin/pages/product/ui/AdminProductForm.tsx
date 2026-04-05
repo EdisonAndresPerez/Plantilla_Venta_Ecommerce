@@ -3,7 +3,7 @@ import type { Product, Size } from "@/interfaces/product.interface";
 import { X, SaveAll, Tag, Plus, Upload, AlertCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 interface Props {
   title: string;
@@ -12,6 +12,12 @@ interface Props {
   isPending: boolean;
   onSubmit: (productLike: Partial<Product>) => Promise<void>;
 }
+
+interface FormInputs extends Product{
+  files? : File[];
+}
+
+
 
 const availableSizes: Size[] = ["XS", "S", "M", "L", "XL", "XXL"];
 
@@ -37,43 +43,47 @@ export const AdminProductForm = ({
     defaultValues: product,
   });
 
-  const selectedSizes = watch('sizes');
-  //console.log(selectedSizes)
-  const selectedTags = watch('tags');
-  const selectedImages = watch('images');
-  const currentStock = watch('stock');
+  const [files, setFiles] = useState<File[]>([]);
+
+  const selectedSizes = watch("sizes");
+  const selectedTags = watch("tags");
+  const selectedImages = watch("images");
+  const currentStock = watch("stock");
 
   const addTag = () => {
     const newTag = labelInputRef.current!.value;
-    if (newTag === '') return;
+    if (newTag === "") return;
 
-    const newTagSet = new Set(getValues('tags'));
+    const newTagSet = new Set(getValues("tags"));
     newTagSet.add(newTag);
-    setValue('tags', Array.from(newTagSet));
-    labelInputRef.current!.value = '';
+    setValue("tags", Array.from(newTagSet));
+    labelInputRef.current!.value = "";
   };
 
   const removeTag = (tag: string) => {
-    const newTagSet = new Set(getValues('tags'));
+    const newTagSet = new Set(getValues("tags"));
     newTagSet.delete(tag);
-    setValue('tags', Array.from(newTagSet));
+    setValue("tags", Array.from(newTagSet));
   };
 
   const addSize = (size: Size) => {
-    const sizeSet = new Set(getValues('sizes'));
+    const sizeSet = new Set(getValues("sizes"));
     sizeSet.add(size);
-    setValue('sizes', Array.from(sizeSet));
+    setValue("sizes", Array.from(sizeSet));
   };
 
   const removeSize = (size: Size) => {
-    const sizeSet = new Set(getValues('sizes'));
+    const sizeSet = new Set(getValues("sizes"));
     sizeSet.delete(size);
-    setValue('sizes', Array.from(sizeSet));
+    setValue("sizes", Array.from(sizeSet));
   };
 
   const removeImage = (imageToRemove: string) => {
-    const currentImages = getValues('images');
-    setValue('images', currentImages.filter((img) => img !== imageToRemove));
+    const currentImages = getValues("images");
+    setValue(
+      "images",
+      currentImages.filter((img) => img !== imageToRemove),
+    );
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -81,18 +91,17 @@ export const AdminProductForm = ({
     e.stopPropagation();
     const files = e.dataTransfer.files;
     console.log(files);
-    // TODO: Handle file upload
+    if (!files) return;
+
+    setFiles((prev) => [...prev, ...Array.from(files)]);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    console.log(files);
-    // TODO: Handle file upload
+    if (!files) return;
+
+    setFiles((prev) => [...prev, ...Array.from(files)]);
   };
-
-
-  
-
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -106,9 +115,9 @@ export const AdminProductForm = ({
           </p>
         </div>
         <div className="flex justify-end mb-10 gap-4">
-          <Button 
-            type="button" 
-            variant="outline" 
+          <Button
+            type="button"
+            variant="outline"
             onClick={() => navigate("/admin/products")}
             disabled={isPending}
           >
@@ -255,7 +264,8 @@ export const AdminProductForm = ({
                       required: "El slug es obligatorio",
                       pattern: {
                         value: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-                        message: "El slug solo puede contener letras minúsculas, números y guiones",
+                        message:
+                          "El slug solo puede contener letras minúsculas, números y guiones",
                       },
                       minLength: {
                         value: 3,
@@ -313,11 +323,13 @@ export const AdminProductForm = ({
                       required: "La descripción es obligatoria",
                       minLength: {
                         value: 10,
-                        message: "La descripción debe tener al menos 10 caracteres",
+                        message:
+                          "La descripción debe tener al menos 10 caracteres",
                       },
                       maxLength: {
                         value: 500,
-                        message: "La descripción no puede exceder 500 caracteres",
+                        message:
+                          "La descripción no puede exceder 500 caracteres",
                       },
                     })}
                     rows={5}
@@ -353,7 +365,7 @@ export const AdminProductForm = ({
                     </div>
                   </div>
                 )}
-                
+
                 <div className="flex flex-wrap gap-2">
                   {selectedSizes.length === 0 ? (
                     <p className="text-sm text-slate-500">
@@ -413,12 +425,13 @@ export const AdminProductForm = ({
                     <div className="flex items-center">
                       <AlertCircle className="h-4 w-4 text-yellow-400 mr-2" />
                       <p className="text-sm text-yellow-700">
-                        Recomendado: Agrega etiquetas para mejorar la búsqueda del producto
+                        Recomendado: Agrega etiquetas para mejorar la búsqueda
+                        del producto
                       </p>
                     </div>
                   </div>
                 )}
-                
+
                 <div className="flex flex-wrap gap-2">
                   {selectedTags.length === 0 ? (
                     <p className="text-sm text-slate-500">No hay etiquetas</p>
@@ -455,7 +468,11 @@ export const AdminProductForm = ({
                     placeholder="Añadir nueva etiqueta..."
                     className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   />
-                  <Button type="button" onClick={addTag} className="px-4 py-2 rounded-lg">
+                  <Button
+                    type="button"
+                    onClick={addTag}
+                    className="px-4 py-2 rounded-lg"
+                  >
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
@@ -518,7 +535,7 @@ export const AdminProductForm = ({
                           className="w-full h-full object-cover rounded-lg"
                         />
                       </div>
-                      <button 
+                      <button
                         type="button"
                         onClick={() => removeImage(image)}
                         className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600"
@@ -530,6 +547,27 @@ export const AdminProductForm = ({
                       </p>
                     </div>
                   ))}
+                </div>
+              </div>
+              {/*Imagenes por cargar */}
+              <div className="mt-6 space-y-3">
+                <h3 className="text-sm font-medium text-slate-700">
+                  Imágenes por cargar
+                </h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {files.map((file, index) => (
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt="Product"
+                      key={index}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  ))}
+                  {
+                    files.length === 0 && (
+                      <p className="text-sm text-slate-500">No hay nuevas imágenes</p>
+                    )
+                  }
                 </div>
               </div>
             </div>
@@ -557,17 +595,17 @@ export const AdminProductForm = ({
                   <span
                     className={`px-2 py-1 text-xs font-medium rounded-full ${
                       currentStock > 5
-                        ? 'bg-green-100 text-green-800'
+                        ? "bg-green-100 text-green-800"
                         : currentStock > 0
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-red-100 text-red-800'
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-red-100 text-red-800"
                     }`}
                   >
                     {currentStock > 5
-                      ? 'En stock'
+                      ? "En stock"
                       : currentStock > 0
-                      ? 'Bajo stock'
-                      : 'Sin stock'}
+                        ? "Bajo stock"
+                        : "Sin stock"}
                   </span>
                 </div>
 
