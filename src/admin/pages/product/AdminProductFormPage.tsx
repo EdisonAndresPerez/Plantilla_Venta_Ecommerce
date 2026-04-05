@@ -20,16 +20,16 @@ export const AdminProductFormPage = () => {
 
   const handleSubmit = async (productLike: Partial<Product>) => {
     await mutation.mutateAsync(productLike, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         toast.success("Producto guardado correctamente", {
-          position: "top-right",
+          position: "bottom-center",
         });
-        navigate("/admin/products");
+        navigate(`/admin/products/${data.id}`);
       },
       onError: (error) => {
         console.error("Error al guardar producto:", error);
         toast.error("Error al guardar el producto", {
-          position: "top-right",
+          position: "bottom-center",
         });
       },
     });
