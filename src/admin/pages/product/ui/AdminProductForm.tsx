@@ -3,7 +3,7 @@ import type { Product, Size } from "@/interfaces/product.interface";
 import { X, SaveAll, Tag, Plus, Upload, AlertCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Props {
   title: string;
@@ -11,14 +11,14 @@ interface Props {
   product: Product;
   isPending: boolean;
 
-  onSubmit: (productLike: Partial<Product> & { files?: File[] }) => Promise<void>;
+  onSubmit: (
+    productLike: Partial<Product> & { files?: File[] },
+  ) => Promise<void>;
 }
 
-interface FormInputs extends Product{
-  files? : File[];
+interface FormInputs extends Product {
+  files?: File[];
 }
-
-
 
 const availableSizes: Size[] = ["XS", "S", "M", "L", "XL", "XXL"];
 
@@ -45,6 +45,10 @@ export const AdminProductForm = ({
   });
 
   const [files, setFiles] = useState<File[]>([]);
+
+  useEffect(() => {
+    setFiles([]);
+  }, [product]);
 
   const selectedSizes = watch("sizes");
   const selectedTags = watch("tags");
@@ -96,7 +100,7 @@ export const AdminProductForm = ({
 
     setFiles((prev) => [...prev, ...Array.from(files)]);
     const currentFiles = getValues("files") || [];
-    setValue('files', [...currentFiles, ...Array.from(files)]);
+    setValue("files", [...currentFiles, ...Array.from(files)]);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +109,7 @@ export const AdminProductForm = ({
 
     setFiles((prev) => [...prev, ...Array.from(files)]);
     const currentFiles = getValues("files") || [];
-    setValue('files', [...currentFiles, ...Array.from(files)]);
+    setValue("files", [...currentFiles, ...Array.from(files)]);
   };
 
   return (
@@ -568,11 +572,11 @@ export const AdminProductForm = ({
                       className="w-full h-full object-cover rounded-lg"
                     />
                   ))}
-                  {
-                    files.length === 0 && (
-                      <p className="text-sm text-slate-500">No hay nuevas imágenes</p>
-                    )
-                  }
+                  {files.length === 0 && (
+                    <p className="text-sm text-slate-500">
+                      No hay nuevas imágenes
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

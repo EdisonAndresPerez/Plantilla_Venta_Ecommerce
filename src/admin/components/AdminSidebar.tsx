@@ -28,7 +28,7 @@ export function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
 
 
   const {user} = useStoreAuth()
-  console.log(user)
+  //console.log(user)
 
 
   return (
