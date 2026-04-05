@@ -10,7 +10,8 @@ interface Props {
   subTitle: string;
   product: Product;
   isPending: boolean;
-  onSubmit: (productLike: Partial<Product>) => Promise<void>;
+
+  onSubmit: (productLike: Partial<Product> & { files?: File[] }) => Promise<void>;
 }
 
 interface FormInputs extends Product{
@@ -39,7 +40,7 @@ export const AdminProductForm = ({
     getValues,
     setValue,
     watch,
-  } = useForm({
+  } = useForm<FormInputs>({
     defaultValues: product,
   });
 
@@ -94,6 +95,8 @@ export const AdminProductForm = ({
     if (!files) return;
 
     setFiles((prev) => [...prev, ...Array.from(files)]);
+    const currentFiles = getValues("files") || [];
+    setValue('files', [...currentFiles, ...Array.from(files)]);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,6 +104,8 @@ export const AdminProductForm = ({
     if (!files) return;
 
     setFiles((prev) => [...prev, ...Array.from(files)]);
+    const currentFiles = getValues("files") || [];
+    setValue('files', [...currentFiles, ...Array.from(files)]);
   };
 
   return (

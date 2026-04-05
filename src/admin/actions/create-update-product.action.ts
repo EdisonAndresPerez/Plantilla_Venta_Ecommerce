@@ -2,9 +2,9 @@ import { tesloApi } from "@/api/tesloApi";
 import type { Product } from "@/interfaces/product.interface";
 
 export const createUpdateProductAction = async (
-  productLike: Partial<Product>,
+  productLike: Partial<Product>  & { files?: File[] },
 ): Promise<Product> => {
-  const { id, user, images = [], ...rest } = productLike;
+  const { id, user, images = [], files = [],  ...rest } = productLike;
 
   const isCreating = id === "new";
 
