@@ -120,7 +120,7 @@ export const CustomHeader = () => {
 
                 {isAdmin() && (
                   <Link to="/admin" className="hidden xl:inline-block">
-                    <Button variant="destructive" size="sm" className="cursor-pointer text-xs  bg-yellow-500  text-black  font-semibold">
+                    <Button variant="default" size="sm" className="cursor-pointer text-xs  bg-yellow-500 hover:bg-amber-400  text-black  font-semibold">
                       Panel Administrativo
                     </Button>
                   </Link>

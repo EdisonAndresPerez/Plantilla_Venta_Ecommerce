@@ -4,8 +4,6 @@ import {
   LayoutDashboard,
   ShoppingBag,
   Tags,
-  BarChart3,
-  Settings,
   Package,
   X,
 } from "lucide-react";
