@@ -40,6 +40,7 @@ export const AdminProductForm = ({
     getValues,
     setValue,
     watch,
+    reset,
   } = useForm<FormInputs>({
     defaultValues: product,
   });
@@ -47,8 +48,9 @@ export const AdminProductForm = ({
   const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
+    reset(product);
     setFiles([]);
-  }, [product]);
+  }, [product, reset]);
 
   const selectedSizes = watch("sizes");
   const selectedTags = watch("tags");
@@ -577,7 +579,7 @@ export const AdminProductForm = ({
                       No hay nuevas imágenes
                     </p>
                   )}
-                </div>
+                </div>  
               </div>
             </div>
 

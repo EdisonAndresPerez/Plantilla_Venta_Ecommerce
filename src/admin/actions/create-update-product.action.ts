@@ -11,20 +11,21 @@ export const createUpdateProductAction = async (
   rest.stock = Number(rest.stock || 0);
   rest.price = Number(rest.price || 0);
 
+  console.log({ files });
+
+
+
+
   //preparar imagenes para subir
   if (files.length > 0) {
     const newImageNames = await uploadFiles(files);
     images.push(...newImageNames);
   }
 
-
-const imagesToSave = images.map(image => {
-  if (image.includes("http"))  return image.split("/").pop() ||'' ;
-  return image;
-})
-
-
-
+  const imagesToSave = images.map((image) => {
+    if (image.includes("http")) return image.split("/").pop() || "";
+    return image;
+  });
 
   const { data } = await tesloApi<Product>({
     url: isCreating ? "/products" : `/products/${id}`,
@@ -48,6 +49,8 @@ export interface FileUploadResponse {
   secureURL: string;
   fileName: string;
 }
+
+
 
 const uploadFiles = async (files: File[]) => {
   const uploadPromises = files.map(async (file) => {
