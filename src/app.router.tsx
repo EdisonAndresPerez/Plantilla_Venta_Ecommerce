@@ -14,6 +14,7 @@ import { DashboardPage } from "./admin/pages/dashboard/DashboardPage";
 import { SmartRedirect } from "./components/SmartRedirect";
 import { AboutPage } from "./shop_front/pages/about/AboutPage";
 import { AdminAuthenticatedRoute,  NoAuthenticatedRoute } from "./components/routes/ProtectedRoutes";
+import { CartPage } from "./shop_front/pages/cart/CartPage";
 
 
 
@@ -33,6 +34,10 @@ export const AppRouter = createHashRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: "cart",
+        element: <CartPage/>,
       },
       {
         path: "product/:idSlug",

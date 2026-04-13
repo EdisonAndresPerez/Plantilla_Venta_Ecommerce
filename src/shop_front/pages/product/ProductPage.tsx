@@ -91,6 +91,7 @@ export const ProductPage = () => {
                   <span
                     key={size}
                     className="inline-flex items-center px-3 py-1 rounded-md border border-border text-sm"
+                    
                   >
                     {size}
                   </span>

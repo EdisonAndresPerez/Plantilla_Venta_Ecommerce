@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useProductFilters } from "@/hooks/useProductFilters";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { CustomLogo } from "./CustomLogo";
 import { useStoreAuth } from "@/auth/store/auth.store";
@@ -14,18 +14,19 @@ export const CustomHeader = () => {
   const {authStatus, logout, isAdmin} = useStoreAuth()
   //console.log(user)
 
-  const [cartCount] = useState(3);
+  const [cartCount] = useState(1);
   const { currentSearch, setSearch } = useProductFilters();
   const [searchInput, setSearchInput] = useState(currentSearch);
-  const { gender } = useParams();
+  const { pathname } = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { to: "/", label: "Todo", active: !gender },
-    { to: "/gender/camisetas", label: "Camisetas", active: gender === "camisetas" },
-    { to: "/gender/sudaderas", label: "Sudaderas", active: gender === "sudaderas" },
-    { to: "/gender/chaquetas", label: "Chaquetas", active: gender === "chaquetas" },
-    { to: "/gender/accesorios", label: "Accesorios", active: gender === "accesorios" },
+    { to: "/", label: "Todo", active: pathname === "/" },
+    { to: "/gender/camisetas", label: "Camisetas", active: pathname === "/gender/camisetas" },
+    { to: "/gender/sudaderas", label: "Sudaderas", active: pathname === "/gender/sudaderas" },
+    { to: "/gender/chaquetas", label: "Chaquetas", active: pathname === "/gender/chaquetas" },
+    { to: "/gender/accesorios", label: "Accesorios", active: pathname === "/gender/accesorios" },
+    { to: "/cart", label: "Carrito", active: pathname === "/cart" }
   ];
 
   return (
@@ -128,17 +129,23 @@ export const CustomHeader = () => {
               </div>
 
               {/* Cart */}
-              <Button
-                size="icon"
-                className="relative button-gradient rounded-full h-10 w-10 sm:h-11 sm:w-11 cursor-pointer"
+              <Link
+                to="/cart"
+                aria-label="Ir al carrito"
+                className="transition-transform duration-300 hover:scale-105 active:scale-95"
               >
-                <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-5 w-5 sm:h-6 sm:w-6 rounded-full  bg-yellow-500  text-white text-[10px] sm:text-xs font-bold flex items-center justify-center shadow-lg animate-bounce">
-                    {cartCount}
-                  </span>
-                )}
-              </Button>
+                <Button
+                  size="icon"
+                  className="relative button-gradient rounded-full h-10 w-10 sm:h-11 sm:w-11 cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/20"
+                >
+                  <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5" />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-1 -right-1 h-5 w-5 sm:h-6 sm:w-6 rounded-full  bg-yellow-500  text-white text-[10px] sm:text-xs font-bold flex items-center justify-center shadow-lg animate-bounce">
+                      {cartCount}
+                    </span>
+                  )}
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
