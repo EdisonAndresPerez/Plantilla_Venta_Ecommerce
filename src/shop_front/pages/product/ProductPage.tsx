@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Loading } from "@/components/Loading";
 import { formatPrice } from "@/lib/currency-formatter";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ShoppingBag } from "lucide-react";
+import { ChevronLeft, Heart, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useFavoritesStore } from "@/shop_front/store/favorites.store";
 
 export const ProductPage = () => {
   const { idSlug } = useParams();
@@ -18,6 +19,11 @@ export const ProductPage = () => {
     queryFn: () => getProductById(idSlug || ""),
     retry: false,
   });
+
+  const isFavorite = useFavoritesStore((state) =>
+    state.isFavorite(product?.id ?? ""),
+  );
+  const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
 
   if (!idSlug) return <Navigate to="/" replace />;
   if (isLoading) return <Loading />;
@@ -81,6 +87,18 @@ export const ProductPage = () => {
               </h2>
               <p className="mt-3 text-3xl font-bold">{formatPrice(product.price)}</p>
             </div>
+
+            <button
+              onClick={() => toggleFavorite(product.id)}
+              className={`inline-flex w-fit items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-300 ${
+                isFavorite
+                  ? "bg-primary text-white"
+                  : "border border-border bg-background hover:bg-muted"
+              }`}
+            >
+              <Heart className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} />
+              {isFavorite ? "Quitar de favoritos" : "Agregar a favoritos"}
+            </button>
 
             <p className="text-muted-foreground leading-relaxed">{product.description}</p>
 

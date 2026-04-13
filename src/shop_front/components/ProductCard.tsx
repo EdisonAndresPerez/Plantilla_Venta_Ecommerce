@@ -4,8 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { Size } from "@/interfaces/product.interface";
 import { formatPrice } from "@/lib/currency-formatter";
 import { ShoppingBag, Heart } from "lucide-react";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useFavoritesStore } from "@/shop_front/store/favorites.store";
 
 interface ProductCardProps {
   id: string;
@@ -26,8 +26,8 @@ const ProductCard = ({
 }: ProductCardProps) => {
   const { user } = useStoreAuth();
   const navigate = useNavigate();
-
-  const [isLiked, setIsLiked] = useState(false);
+  const isLiked = useFavoritesStore((state) => state.isFavorite(id));
+  const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
 
   // Mapeo de categorías/géneros a español
   const categoryMap: Record<string, string> = {
@@ -64,7 +64,7 @@ const ProductCard = ({
           <button 
             onClick={(e) => {
               e.stopPropagation();
-              setIsLiked(!isLiked);
+              toggleFavorite(id);
             }}
             className={`absolute top-3 sm:top-4 right-3 sm:right-4 h-8 w-8 sm:h-10 sm:w-10 rounded-full flex items-center justify-center transition-all duration-300 ${
               isLiked
