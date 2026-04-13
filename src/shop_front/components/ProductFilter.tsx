@@ -92,9 +92,6 @@ const ProductFilter = () => {
         </RadioGroup>
       </div>
 
-      <Button className="w-full button-gradient rounded-xl h-12 font-semibold">
-        Aplicar Filtros
-      </Button>
     </div>
   );
 };
