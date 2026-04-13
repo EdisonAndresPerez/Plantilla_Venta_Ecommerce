@@ -5,6 +5,7 @@ import type { Size } from "@/interfaces/product.interface";
 import { formatPrice } from "@/lib/currency-formatter";
 import { ShoppingBag, Heart } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ProductCardProps {
   id: string;
@@ -16,16 +17,15 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({
+  id,
   name,
   price,
   image,
   category,
   size,
 }: ProductCardProps) => {
-
-    const {user} = useStoreAuth()
-
-
+  const { user } = useStoreAuth();
+  const navigate = useNavigate();
 
   const [isLiked, setIsLiked] = useState(false);
 
@@ -45,7 +45,10 @@ const ProductCard = ({
   const categoryFormatted = categoryMap[category.toLowerCase()] || category;
 
   return (
-    <Card className="group border-0 product-card-hover cursor-pointer card-gradient rounded-xl sm:rounded-2xl overflow-hidden">
+    <Card
+      className="group border-0 product-card-hover cursor-pointer card-gradient rounded-xl sm:rounded-2xl overflow-hidden"
+      onClick={() => navigate(`/product/${id}`)}
+    >
       <CardContent className="p-0">
         <div className="relative aspect-square overflow-hidden">
           <img
@@ -55,7 +58,7 @@ const ProductCard = ({
           />
 
           {/* Gradient overlay on hover */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
           {/* Like button */}
           <button 
@@ -85,7 +88,9 @@ const ProductCard = ({
           <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
             <Button
               disabled={!user}
-            className="w-full button-gradient rounded-full h-10 sm:h-12 text-xs sm:text-sm font-semibold gap-2">
+              onClick={(e) => e.stopPropagation()}
+              className="w-full button-gradient rounded-full h-10 sm:h-12 text-xs sm:text-sm font-semibold gap-2"
+            >
               <ShoppingBag className="h-3 sm:h-4 w-3 sm:w-4" />
               <span className="hidden sm:inline">
                 {user ? "Agregar al carrito" : "Inicia sesión para comprar"}
