@@ -1,185 +1,291 @@
-# 🛍️ Teslo Shop - E-commerce Platform
+# Teslo Shop Frontend
 
-Plataforma de e-commerce moderna y responsive para gestión y venta de productos de moda urbana. Construida con React, TypeScript y TanStack Query.
+Frontend de e-commerce para catálogo y administración de productos, construido con React 19, TypeScript, TanStack Query y Vite.
 
-## ✨ Características
+Este documento describe el estado real del proyecto: arquitectura, flujos implementados, endpoints usados, limitaciones actuales y recomendaciones para desarrollo/despliegue.
 
-- 🎨 **Interfaz Moderna**: Diseño responsive con Tailwind CSS y componentes reutilizables
-- 🔍 **Filtros Avanzados**: Búsqueda por género, tallas y rangos de precio
-- 📱 **Mobile First**: Diseño optimizado para dispositivos móviles
-- 🚀 **Performance**: Optimizado con React Query para caching y gestión de estado del servidor
-- 🔐 **Panel de Administración**: Gestión completa de productos (CRUD)
-- 🎯 **Paginación**: Navegación eficiente entre productos
-- 🖼️ **Galería de Imágenes**: Múltiples imágenes por producto
+## 1. Resumen Ejecutivo
 
-## 🛠️ Tecnologías
+El proyecto está dividido en tres dominios:
 
-### Frontend
-- **React 19** - Framework UI
-- **TypeScript** - Tipado estático
-- **Vite** - Build tool y dev server
-- **React Router 7** - Enrutamiento
-- **TanStack Query** - Gestión de estado del servidor
-- **Axios** - Cliente HTTP
-- **Tailwind CSS 4** - Estilos
-- **Radix UI** - Componentes accesibles
-- **Framer Motion** - Animaciones
-- **Lucide React** - Iconos
+- Shop Front: navegación pública, listado de productos, filtros por talla/precio/búsqueda, vistas por categoría.
+- Auth: login/registro y control de sesión con Zustand + token JWT.
+- Admin: listado de productos, edición/creación con subida de imágenes y control de acceso por rol `admin`.
 
-## 📋 Requisitos Previos
+Fortalezas actuales:
 
-- Node.js >= 18.x
-- npm o yarn
-- Backend API de Teslo Shop corriendo (por defecto en `http://localhost:3000`)
+- Arquitectura modular y ordenada por dominio.
+- Gestión de estado servidor robusta con TanStack Query.
+- Flujo de autenticación funcional con renovación de token por check-status.
+- Interfaz responsive con Tailwind 4 y componentes reutilizables.
 
-## 🚀 Instalación
+Estado funcional actual (alto nivel):
 
-1. **Clonar el repositorio**
+- Implementado: login, registro, rutas protegidas, catálogo con filtros, paginación, listado admin, crear/editar producto, subida de imágenes.
+- Parcial/pendiente: detalle de producto (`ProductPage` placeholder), acciones de eliminar en admin sin lógica, carrito simulado en UI.
+
+## 2. Stack Técnico
+
+- React 19
+- TypeScript 5.9
+- Vite 7 + SWC
+- React Router 7 (`createHashRouter`)
+- TanStack Query 5
+- Zustand 5
+- Axios
+- Tailwind CSS 4
+- Radix UI + utilidades CVA/clsx/tailwind-merge
+- Sonner (toasts)
+- Framer Motion
+
+## 3. Requisitos
+
+- Node.js 18+
+- npm 9+
+- Backend Teslo API disponible
+
+## 4. Instalación y Ejecución
+
+1. Clonar repositorio
+
 ```bash
 git clone <url-del-repositorio>
 cd ecomerce-plantilla
 ```
 
-2. **Instalar dependencias**
+2. Instalar dependencias
+
 ```bash
 npm install
 ```
 
-3. **Configurar variables de entorno**
+3. Variables de entorno (`.env` en raíz)
+
 ```bash
-# Crear archivo .env en la raíz del proyecto
 VITE_API_URL=http://localhost:3000/api
 ```
 
-4. **Ejecutar en modo desarrollo**
+4. Desarrollo
+
 ```bash
 npm run dev
 ```
 
-El proyecto estará disponible en `http://localhost:5173`
-
-## 📦 Scripts Disponibles
+5. Build de producción
 
 ```bash
-npm run dev       # Inicia el servidor de desarrollo
-npm run build     # Construye el proyecto para producción
-npm run preview   # Previsualiza el build de producción
-npm run lint      # Ejecuta ESLint
+npm run build
 ```
 
-## 📁 Estructura del Proyecto
+6. Preview local del build
 
+```bash
+npm run preview
 ```
+
+## 5. Scripts
+
+```bash
+npm run dev
+npm run build
+npm run preview
+npm run lint
+```
+
+## 6. Arquitectura del Proyecto
+
+```text
 src/
-├── admin/              # Módulo de administración
-│   ├── components/     # Componentes del admin
-│   ├── layouts/        # Layouts del admin
-│   └── pages/          # Páginas del admin
-├── shop_front/         # Módulo de tienda
-│   ├── actions/        # Acciones API (productos)
-│   ├── components/     # Componentes de la tienda
-│   ├── hooks/          # Custom hooks (useProducts)
-│   ├── layouts/        # Layouts de la tienda
-│   └── pages/          # Páginas de la tienda
-├── auth/               # Módulo de autenticación
-│   ├── components/     # Componentes de auth
-│   └── pages/          # Login y Register
-├── api/                # Configuración de Axios
-├── components/         # Componentes compartidos
-│   ├── custom/         # Componentes personalizados
-│   └── ui/             # Componentes UI base
-├── interfaces/         # Tipos TypeScript
-└── lib/                # Utilidades
+	admin/         # Backoffice (dashboard, lista y formulario de productos)
+	auth/          # Login/registro + store de autenticación
+	shop_front/    # Catálogo público, filtros y páginas públicas
+	api/           # Cliente Axios con interceptor de token
+	components/    # UI transversal y utilitarios visuales
+	hooks/         # Hooks compartidos (filtros, toast)
+	interfaces/    # Tipos de dominio (Product, User, responses)
+	lib/           # helpers (formatPrice, cn)
 ```
 
-## 🔌 Endpoints de API
+Puntos técnicos importantes:
 
-El frontend se comunica con los siguientes endpoints:
+- Alias `@/*` configurado en TypeScript y Vite.
+- `verbatimModuleSyntax: true`: los tipos deben importarse con `import type`.
+- Router basado en hash (`createHashRouter`), útil para hosting estático sin reescrituras de servidor.
 
-### Productos
-```typescript
-GET    /products              # Obtener productos (con filtros)
-GET    /products/:id          # Obtener producto por ID
-POST   /products              # Crear producto (Admin)
-PATCH  /products/:id          # Actualizar producto (Admin)
-DELETE /products/:id          # Eliminar producto (Admin)
+## 7. Rutas y Acceso
 
-# Parámetros de consulta soportados:
-# - limit: número de productos por página
-# - offset: desplazamiento para paginación
-# - gender: filtro por género (women, men, kid)
-# - sizes: filtro por tallas (S,M,L,XL,etc)
-# - minPrice: precio mínimo
-# - maxPrice: precio máximo
+Rutas públicas:
+
+- `/`
+- `/gender/:gender`
+- `/product/:idSlug` (vista pendiente de implementar)
+- `/about`
+
+Rutas de autenticación:
+
+- `/auth/login`
+- `/auth/register`
+
+Rutas admin:
+
+- `/admin`
+- `/admin/products`
+- `/admin/products/:id` (`:id = new` para crear)
+
+Protección de rutas:
+
+- `NoAuthenticatedRoute`: evita que un usuario logueado entre a `/auth/*`.
+- `AdminAuthenticatedRoute`: exige sesión activa y rol admin.
+
+## 8. Gestión de Estado y Datos
+
+### 8.1 Estado de sesión (Zustand)
+
+Store en `auth.store.ts`:
+
+- `user`, `token`, `authStatus`
+- `login`, `register`, `logout`, `checkAuthStatus`
+- Getter `isAdmin()` basado en roles.
+
+### 8.2 Estado servidor (React Query)
+
+- Query global de auth en `TesloShopApp.tsx`:
+	- `queryKey: ["auth"]`
+	- `queryFn: checkAuthStatus`
+	- `refetchInterval: 1 min`
+
+- Productos catálogo:
+	- `queryKey: ["products", filtros]`
+	- `placeholderData: keepPreviousData`
+
+- Producto individual/admin:
+	- `queryKey: ["product", { id }]`
+	- `staleTime: 5 min`
+
+- Mutación create/update:
+	- invalida queries de productos
+	- actualiza caché de lista para reflejo rápido en UI
+
+## 9. Integración con API
+
+Cliente HTTP:
+
+- `src/api/tesloApi.ts`
+- Inyecta `Authorization: Bearer <token>` desde `localStorage`.
+
+Endpoints usados actualmente:
+
+Auth:
+
+- `POST /auth/login`
+- `POST /auth/register`
+- `GET /auth/check-status`
+
+Productos:
+
+- `GET /products` con params:
+	- `limit`, `offset`, `sizes`, `gender`, `minPrice`, `maxPrice`, `q`
+- `GET /products/:id`
+- `POST /products`
+- `PATCH /products/:id`
+
+Archivos:
+
+- `POST /files/product` (upload)
+- `GET /files/product/:filename` (resolución de URL de imagen)
+
+Nota de dominio:
+
+- El proyecto usa categorías en español en frontend: `camisetas`, `sudaderas`, `chaquetas`, `accesorios`.
+
+## 10. Flujo de Productos (Shop + Admin)
+
+Shop:
+
+1. Header/URL generan filtros (`sizes`, `price`, `search`, `gender`).
+2. `useProducts` construye query y consulta API.
+3. Respuesta normaliza URLs de imágenes.
+4. `ProductsGrid` muestra cards + paginación.
+
+Admin:
+
+1. Lista admin reutiliza `useProducts` con búsqueda server-side.
+2. Formulario (`/admin/products/:id`) consume `useProduct`.
+3. Al guardar:
+	 - opcional upload de archivos
+	 - merge de imágenes existentes + nuevas
+	 - `PATCH`/`POST` con nombres de archivo
+4. Se actualiza caché y se navega al producto guardado.
+
+## 11. UI/UX Actual
+
+- Diseño responsive y enfoque mobile-first en componentes principales.
+- Tema visual consistente (shop + auth + admin).
+- Toasts centralizados con Sonner (`src/components/ui/sonner.tsx`).
+
+## 12. Limitaciones y Pendientes Reales
+
+Funcionalidad:
+
+- `ProductPage` está como placeholder (`ProductPage` retorna texto simple).
+- Botón de eliminar en tabla admin no ejecuta mutación.
+- Dashboard admin usa datos mock/estáticos.
+- Carrito y favoritos son visuales (sin persistencia/transacciones).
+
+Calidad técnica:
+
+- Hay `console.log` y algunos comentarios de depuración en módulos clave.
+- No hay suite de tests automatizados aún.
+- No existe `src/components/ui/toast.tsx`; el proyecto usa Sonner (ya documentado).
+
+## 13. Despliegue
+
+Este frontend usa `createHashRouter`, por lo que puede desplegarse en hosting estático sin reglas especiales de rewrite para rutas SPA.
+
+Checklist de despliegue:
+
+1. Configurar `VITE_API_URL` apuntando al backend real.
+2. Ejecutar `npm run build`.
+3. Publicar carpeta `dist`.
+4. Verificar CORS y cabeceras `Authorization` en backend.
+
+## 14. Troubleshooting
+
+### Error: "Cannot find module '@/components/ui/toast'"
+
+Causa: falta el archivo `ui/toast.tsx`.
+
+Resolución recomendada:
+
+- Mantener `sonner` como sistema de toast (implementación actual), o
+- crear el componente `ui/toast.tsx` si se quiere migrar al patrón de shadcn toast.
+
+### Error de TypeScript con imports de tipos
+
+Con `verbatimModuleSyntax: true`, usar:
+
+```ts
+import type { MiTipo } from "...";
 ```
 
-### Archivos
-```typescript
-GET /files/product/:filename  # Obtener imagen de producto
-```
+en lugar de mezclar tipo y valor en el mismo import cuando el símbolo sea solo tipo.
 
-## 🎨 Características por Módulo
+## 15. Convenciones Recomendadas para el Equipo
 
-### 🛒 Shop Front
-- Página de inicio con productos destacados
-- Filtrado por género (mujer, hombre, niños)
-- Filtrado por tallas y precios
-- Vista de detalle de producto
-- Paginación de resultados
-- Diseño responsive
+- Mantener el patrón `actions/ + hooks/ + pages/` por dominio.
+- Centralizar llamadas HTTP en `api/` y `actions/`.
+- Usar React Query para estado servidor y evitar duplicar estado local.
+- Evitar lógica de negocio en componentes visuales.
+- Remover logs de depuración antes de producción.
 
-### 👨‍💼 Panel de Administración
-- Lista de productos con búsqueda
-- Crear nuevos productos
-- Editar productos existentes
-- Eliminar productos
-- Gestión de imágenes
+## 16. Roadmap Sugerido
 
-### 🔐 Autenticación
-- Login de usuarios
-- Registro de usuarios
-- Rutas protegidas
+- Implementar detalle real de producto (`ProductPage`).
+- Implementar delete producto con confirmación y actualización de caché.
+- Añadir carrito real (estado + checkout).
+- Añadir tests (unitarios y de integración para hooks/actions).
+- Añadir monitoreo de errores y trazas en producción.
 
-## 🎯 Roadmap
+## 17. Licencia
 
-- [ ] Implementar carrito de compras
-- [ ] Sistema de favoritos
-- [ ] Integración de pasarela de pago
-- [ ] Reviews y ratings de productos
-- [ ] Sistema de órdenes
-- [ ] Perfil de usuario
-- [ ] Historial de compras
-
-## 🤝 Contribución
-
-Las contribuciones son bienvenidas. Por favor:
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'feat: add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-### Convención de Commits
-
-Seguimos [Conventional Commits](https://www.conventionalcommits.org/):
-
-- `feat:` Nueva característica
-- `fix:` Corrección de bug
-- `docs:` Cambios en documentación
-- `style:` Cambios de formato (no afectan el código)
-- `refactor:` Refactorización de código
-- `test:` Añadir o modificar tests
-- `chore:` Tareas de mantenimiento
-
-## 📝 Licencia
-
-Este proyecto es privado y no está bajo ninguna licencia de código abierto.
-
-## 👨‍💻 Autor
-
-Desarrollado para proyecto de e-commerce Teslo Shop
-
----
-
-⭐ Si te gusta este proyecto, dale una estrella en GitHub!
+Proyecto privado.
