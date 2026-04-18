@@ -26,7 +26,6 @@ export const CustomHeader = () => {
     { to: "/gender/sudaderas", label: "Sudaderas", active: pathname === "/gender/sudaderas" },
     { to: "/gender/chaquetas", label: "Chaquetas", active: pathname === "/gender/chaquetas" },
     { to: "/gender/accesorios", label: "Accesorios", active: pathname === "/gender/accesorios" },
-    { to: "/cart", label: "Carrito", active: pathname === "/cart" }
   ];
 
   return (
