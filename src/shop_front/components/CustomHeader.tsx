@@ -7,6 +7,7 @@ import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { CustomLogo } from "./CustomLogo";
 import { useStoreAuth } from "@/auth/store/auth.store";
+import { useFavoritesStore } from "@/shop_front/store/favorites.store";
 
 
 export const CustomHeader = () => {
@@ -14,7 +15,7 @@ export const CustomHeader = () => {
   const {authStatus, logout, isAdmin} = useStoreAuth()
   //console.log(user)
 
-  const [cartCount] = useState(1);
+  const favoritesCount = useFavoritesStore((state) => state.favoriteIds.length);
   const { currentSearch, setSearch } = useProductFilters();
   const [searchInput, setSearchInput] = useState(currentSearch);
   const { pathname } = useLocation();
@@ -142,9 +143,9 @@ export const CustomHeader = () => {
                   className="relative button-gradient rounded-full h-10 w-10 sm:h-11 sm:w-11 cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/20"
                 >
                   <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5" />
-                  {cartCount > 0 && (
+                    {favoritesCount > 0 && (
                     <span className="absolute -top-1 -right-1 h-5 w-5 sm:h-6 sm:w-6 rounded-full  bg-yellow-500  text-white text-[10px] sm:text-xs font-bold flex items-center justify-center shadow-lg animate-bounce">
-                      {cartCount}
+                        {favoritesCount}
                     </span>
                   )}
                 </Button>
