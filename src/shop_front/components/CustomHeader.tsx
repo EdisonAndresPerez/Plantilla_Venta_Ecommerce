@@ -1,7 +1,7 @@
 import { Search, ShoppingBag, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useProductFilters } from "@/hooks/useProductFilters";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,15 @@ export const CustomHeader = () => {
   const [searchInput, setSearchInput] = useState(currentSearch);
   const { pathname } = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setSearchInput(currentSearch);
+  }, [currentSearch]);
+
+  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSearch(searchInput);
+  };
 
   const navLinks = [
     { to: "/", label: "Todo", active: pathname === "/" },
@@ -72,20 +81,15 @@ export const CustomHeader = () => {
             <div className="flex items-center space-x-2 sm:space-x-3">
               {/* Search Desktop */}
               <div className="hidden lg:flex items-center">
-                <div className="relative group">
+                <form className="relative group" onSubmit={handleSearchSubmit}>
                   <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Input
                     placeholder="Buscar productos..."
                     className="pl-11 w-48 xl:w-64 h-11 rounded-full border-2 border-transparent bg-muted/50 focus:border-primary focus:bg-white transition-all duration-300"
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        setSearch(searchInput);
-                      }
-                    }}
                   />
-                </div>
+                </form>
               </div>
 
               {/* Search Mobile */}
