@@ -6,6 +6,7 @@ import ProductFilter from "./ProductFilter";
 import { ProductCardSkeleton } from "./ProductCardSkeleton";
 import { useSearchParams } from "react-router";
 import { useState } from "react";
+import { FilterError } from "@/components/FilterError";
 
 interface Props {
   products: Product[];
@@ -24,6 +25,15 @@ export const ProductsGrid = ({ products, isLoading = false }: Props) => {
     searchParams.set("view", mode);
     setSearchParams(searchParams);
   };
+
+  const hasSizeFilter = Boolean(searchParams.get("sizes"));
+  const hasPriceFilter = (searchParams.get("price") || "any") !== "any";
+  const hasSearchFilter = Boolean(searchParams.get("search")?.trim());
+
+  const shouldShowFilterError =
+    !isLoading &&
+    products.length === 0 &&
+    (hasSizeFilter || hasPriceFilter || hasSearchFilter);
 
   return (
     <>
@@ -101,32 +111,36 @@ export const ProductsGrid = ({ products, isLoading = false }: Props) => {
 
             {/* Products Grid */}
             <div className="flex-1">
-              <div
-                className={
-                  viewMode === "grid"
-                    ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                    : "space-y-6"
-                }
-              >
-                {isLoading ? (
-                  // Mostrar skeletons para mantener el espacio del grid
-                  Array.from({ length: 9 }).map((_, index) => (
-                    <ProductCardSkeleton key={`skeleton-${index}`} />
-                  ))
-                ) : (
-                  products.map((product) => (
-                    <ProductCard
-                      key={product.id}
-                      id={product.id}
-                      name={product.title}
-                      price={product.price}
-                      image={product.images[0]}
-                      category={product.gender}
-                      size={product.sizes}
-                    />
-                  ))
-                )}
-              </div>
+              {shouldShowFilterError ? (
+                <FilterError />
+              ) : (
+                <div
+                  className={
+                    viewMode === "grid"
+                      ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                      : "space-y-6"
+                  }
+                >
+                  {isLoading ? (
+                    // Mostrar skeletons para mantener el espacio del grid
+                    Array.from({ length: 9 }).map((_, index) => (
+                      <ProductCardSkeleton key={`skeleton-${index}`} />
+                    ))
+                  ) : (
+                    products.map((product) => (
+                      <ProductCard
+                        key={product.id}
+                        id={product.id}
+                        name={product.title}
+                        price={product.price}
+                        image={product.images[0]}
+                        category={product.gender}
+                        size={product.sizes}
+                      />
+                    ))
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

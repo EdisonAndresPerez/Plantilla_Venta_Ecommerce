@@ -23,7 +23,7 @@ export const CustomjumAction = ({
 }: PropsClick) => {
   return (
     <>
-      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center text-center mt-8 ">
         <Button
           onClick={onClickExpolore}
           size="lg"

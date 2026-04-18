@@ -25,9 +25,26 @@ export const CustomHeader = () => {
     setSearchInput(currentSearch);
   }, [currentSearch]);
 
+  const scrollToProductsSection = () => {
+    // Espera a que React renderice los nuevos resultados tras cambiar los query params.
+    setTimeout(() => {
+      const productsSection = document.getElementById("products-section");
+
+      if (!productsSection) {
+        return;
+      }
+
+      const yOffset = -80;
+      const y = productsSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }, 100);
+  };
+
   const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSearch(searchInput);
+    scrollToProductsSection();
   };
 
   const navLinks = [

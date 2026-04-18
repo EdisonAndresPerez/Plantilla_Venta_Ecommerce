@@ -11,7 +11,7 @@ export const GenderPage = () => {
   const { data, isFetching } = useProducts();
   const stats = [
     {
-      value: String(data?.products.length ?? 0),
+      value: String(data?.count ?? 0),
       label: "Productos",
     },
   ];
