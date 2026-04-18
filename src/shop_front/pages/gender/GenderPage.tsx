@@ -1,4 +1,5 @@
 import { CustomPagination } from "@/components/custom/CustomPagination";
+import { CustomjumAction } from "@/shop_front/components/CustomjumAction";
 import { CustomJumbotron } from "@/shop_front/components/CustomJumbotron";
 import { CustomPromotion } from "@/shop_front/components/CustomPromotion";
 import { ProductsGrid } from "@/shop_front/components/ProductsGrid";
@@ -8,7 +9,12 @@ import { useParams } from "react-router";
 export const GenderPage = () => {
   const { gender } = useParams();
   const { data, isFetching } = useProducts();
-
+  const stats = [
+    {
+      value: String(data?.products.length ?? 0),
+      label: "Productos",
+    },
+  ];
 
   const genderLabelTitle =
     gender === "camisetas"
@@ -20,6 +26,13 @@ export const GenderPage = () => {
           : gender === "accesorios"
             ? "Accesorios"
             : "Todo";
+
+  const handleClickExplore = () => {
+    const productsSection = document.getElementById("products-section");
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -35,6 +48,14 @@ export const GenderPage = () => {
           },
         }}
       />
+
+     
+      <CustomjumAction
+        onClickExpolore={handleClickExplore}
+        titleButtonExplore="Explorar Productos"
+        stats={stats}
+      />
+   
 
       {/* Products Grid */}
       <ProductsGrid products={data?.products || []} isLoading={isFetching} />

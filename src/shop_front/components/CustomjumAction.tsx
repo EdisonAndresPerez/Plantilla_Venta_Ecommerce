@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Zap } from "lucide-react";
+import { CustomjumStats } from "./CustomjumStats";
 
 interface PropsClick {
   //definimos las funciones de los botones
@@ -9,11 +10,16 @@ interface PropsClick {
   //definimos el contenido de los botones
   titleButtonExplore: string;
   titleButtonTrends?: string;
+  stats?: {
+    value: string;
+    label: string;
+  }[];
 }
 
 export const CustomjumAction = ({
   onClickExpolore,
   titleButtonExplore,
+  stats,
 }: PropsClick) => {
   return (
     <>
@@ -26,6 +32,8 @@ export const CustomjumAction = ({
           <Zap className="h-5 w-5" />
           {titleButtonExplore}
         </Button>
+
+        {stats?.length ? <CustomjumStats stats={stats} /> : null}
       </div>
     </>
   );
