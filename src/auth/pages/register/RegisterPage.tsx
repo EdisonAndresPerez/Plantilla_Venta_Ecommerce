@@ -16,6 +16,28 @@ import { toast } from "sonner";
 import { AuthContainer } from "@/auth/components/AuthContainer";
 import { Link, useNavigate } from "react-router-dom";
 import { useStoreAuth } from "@/auth/store/auth.store";
+import { getAdditionalUserInfo, signInWithPopup, signOut } from "firebase/auth";
+import type { FirebaseError } from "firebase/app";
+import { auth, googleProvider } from "@/firebase/config";
+
+const getGoogleAuthErrorMessage = (error: unknown): string => {
+  const firebaseError = error as FirebaseError;
+
+  switch (firebaseError?.code) {
+    case "auth/unauthorized-domain":
+      return "Dominio no autorizado. Agrega este dominio en Firebase > Authentication > Settings > Authorized domains.";
+    case "auth/operation-not-allowed":
+      return "Google Sign-In no está habilitado. Actívalo en Firebase > Authentication > Sign-in method > Google.";
+    case "auth/popup-blocked":
+      return "El navegador bloqueó la ventana emergente. Habilita popups y vuelve a intentar.";
+    case "auth/popup-closed-by-user":
+      return "Cerraste la ventana de Google antes de completar el registro.";
+    case "auth/network-request-failed":
+      return "Fallo de red al conectar con Firebase. Revisa tu conexión e inténtalo nuevamente.";
+    default:
+      return `Error Firebase: ${firebaseError?.code ?? "desconocido"}. Revisa la consola para más detalle.`;
+  }
+};
 
 export const RegisterPage = () => {
   const { register } = useStoreAuth();
@@ -47,6 +69,37 @@ export const RegisterPage = () => {
       toast.error("Error al crear cuenta", {
         description: "Revisa los datos e intenta de nuevo.",
       });
+    }
+  };
+
+  const handleGoogleRegister = async () => {
+    setIsLoading(true);
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const additionalUserInfo = getAdditionalUserInfo(result);
+
+      if (!additionalUserInfo?.isNewUser) {
+        await signOut(auth);
+        toast.error("Esta cuenta de Google ya existe", {
+          description:
+            "Tu cuenta ya está registrada. Ve a iniciar sesión con Google desde Login.",
+        });
+        navigate("/auth/login");
+        return;
+      }
+
+      toast.success("Cuenta de Google creada exitosamente", {
+        description: `Bienvenido ${result.user.displayName ?? result.user.email ?? ""}`.trim(),
+      });
+      navigate("/");
+    } catch (error) {
+      console.error("Google register error:", error);
+      toast.error("No se pudo registrar con Google", {
+        description: getGoogleAuthErrorMessage(error),
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -161,6 +214,9 @@ export const RegisterPage = () => {
         >
           <Button
             variant="outline"
+            type="button"
+            disabled={isLoading}
+            onClick={handleGoogleRegister}
             className="w-full h-12 bg-transparent border-bunker-border/30 text-bunker-light hover:bg-bunker-border/10 hover:text-bunker-light rounded-xl tracking-wide text-sm cursor-pointer"
           >
             <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
@@ -181,7 +237,7 @@ export const RegisterPage = () => {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Continuar con Google
+            Registrarme con Google
           </Button>
         </motion.div>
 

@@ -8,7 +8,7 @@ import { AuthContainer } from "@/auth/components/AuthContainer";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useStoreAuth } from "@/auth/store/auth.store";
-import { signInWithPopup } from "firebase/auth";
+import { getAdditionalUserInfo, signInWithPopup, signOut } from "firebase/auth";
 import type { FirebaseError } from "firebase/app";
 import { auth, googleProvider } from "@/firebase/config";
 
@@ -67,7 +67,19 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const { user } = await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      const { user } = result;
+      const additionalUserInfo = getAdditionalUserInfo(result);
+
+      if (additionalUserInfo?.isNewUser) {
+        await signOut(auth);
+        toast.error("Cuenta de Google no registrada", {
+          description:
+            "Esta cuenta es nueva. Primero regístrate desde la pantalla de crear cuenta con Google.",
+        });
+        navigate("/auth/register");
+        return;
+      }
 
       toast.success("Inicio de sesión con Google exitoso", {
         description: `Bienvenido ${user.displayName ?? user.email ?? ""}`.trim(),
@@ -211,7 +223,7 @@ const LoginPage = () => {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Continuar con Google
+            Entrar con Google
           </Button>
         </motion.div>
 
