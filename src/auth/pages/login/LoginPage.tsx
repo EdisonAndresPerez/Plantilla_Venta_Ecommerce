@@ -8,6 +8,28 @@ import { AuthContainer } from "@/auth/components/AuthContainer";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useStoreAuth } from "@/auth/store/auth.store";
+import { signInWithPopup } from "firebase/auth";
+import type { FirebaseError } from "firebase/app";
+import { auth, googleProvider } from "@/firebase/config";
+
+const getGoogleAuthErrorMessage = (error: unknown): string => {
+  const firebaseError = error as FirebaseError;
+
+  switch (firebaseError?.code) {
+    case "auth/unauthorized-domain":
+      return "Dominio no autorizado. Agrega este dominio en Firebase > Authentication > Settings > Authorized domains.";
+    case "auth/operation-not-allowed":
+      return "Google Sign-In no está habilitado. Actívalo en Firebase > Authentication > Sign-in method > Google.";
+    case "auth/popup-blocked":
+      return "El navegador bloqueó la ventana emergente. Habilita popups y vuelve a intentar.";
+    case "auth/popup-closed-by-user":
+      return "Cerraste la ventana de Google antes de completar el inicio de sesión.";
+    case "auth/network-request-failed":
+      return "Fallo de red al conectar con Firebase. Revisa tu conexión e inténtalo nuevamente.";
+    default:
+      return `Error Firebase: ${firebaseError?.code ?? "desconocido"}. Revisa la consola para más detalle.`;
+  }
+};
 
 const LoginPage = () => {
   const { login } = useStoreAuth();
@@ -38,6 +60,27 @@ const LoginPage = () => {
       toast.error("Error al iniciar sesión", {
         description: "Revisa tus credenciales e intenta de nuevo.",
       });
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+
+    try {
+      const { user } = await signInWithPopup(auth, googleProvider);
+
+      toast.success("Inicio de sesión con Google exitoso", {
+        description: `Bienvenido ${user.displayName ?? user.email ?? ""}`.trim(),
+      });
+
+      navigate("/");
+    } catch (error) {
+      console.error("Google login error:", error);
+      toast.error("No se pudo iniciar con Google", {
+        description: getGoogleAuthErrorMessage(error),
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -145,6 +188,9 @@ const LoginPage = () => {
         >
           <Button
             variant="outline"
+            type="button"
+            disabled={isLoading}
+            onClick={handleGoogleLogin}
             className="w-full h-12 bg-transparent border-bunker-border/30 text-bunker-light hover:bg-bunker-border/10 hover:text-bunker-light rounded-xl tracking-wide text-sm cursor-pointer"
           >
             <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">

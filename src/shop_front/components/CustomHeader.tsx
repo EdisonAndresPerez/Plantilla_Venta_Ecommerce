@@ -123,8 +123,12 @@ export const CustomHeader = () => {
               <div className="hidden sm:flex items-center gap-2">
                 {authStatus === "not-authenticated" ? (
                   <Link to="/auth/login">
-                    <Button variant="default" size="sm" className="cursor-pointer text-xs">
-                      <span className="hidden lg:inline">Iniciar Sesión</span>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="cursor-pointer text-xs bg-yellow-500 hover:bg-amber-400 text-black font-semibold"
+                    >
+                      <span className="hidden lg:inline ">Iniciar Sesión</span>
                       <span className="lg:hidden">Login</span>
                     </Button>
                   </Link>
@@ -203,7 +207,7 @@ export const CustomHeader = () => {
               <div className="pt-4 space-y-2 border-t border-border">
                 {authStatus === "not-authenticated" ? (
                   <Link to="/auth/login" onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="default" className="w-full cursor-pointer">
+                    <Button className="w-full cursor-pointer bg-yellow-500 hover:bg-amber-400 text-black font-semibold">
                       Iniciar Sesión
                     </Button>
                   </Link>
