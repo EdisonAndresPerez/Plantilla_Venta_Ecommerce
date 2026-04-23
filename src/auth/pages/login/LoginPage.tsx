@@ -32,7 +32,7 @@ const getGoogleAuthErrorMessage = (error: unknown): string => {
 };
 
 const LoginPage = () => {
-  const { login } = useStoreAuth();
+  const { login, setFirebaseSession } = useStoreAuth();
 
   const navigate = useNavigate();
 
@@ -80,6 +80,14 @@ const LoginPage = () => {
         navigate("/auth/register");
         return;
       }
+
+      const firebaseIdToken = await user.getIdToken();
+      setFirebaseSession({
+        token: firebaseIdToken,
+        uid: user.uid,
+        email: user.email ?? "",
+        fullName: user.displayName ?? user.email ?? "Usuario Google",
+      });
 
       toast.success("Inicio de sesión con Google exitoso", {
         description: `Bienvenido ${user.displayName ?? user.email ?? ""}`.trim(),

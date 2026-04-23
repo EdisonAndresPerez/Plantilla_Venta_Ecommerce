@@ -40,7 +40,7 @@ const getGoogleAuthErrorMessage = (error: unknown): string => {
 };
 
 export const RegisterPage = () => {
-  const { register } = useStoreAuth();
+  const { register, setFirebaseSession } = useStoreAuth();
 
   const navigate = useNavigate();
 
@@ -88,6 +88,14 @@ export const RegisterPage = () => {
         navigate("/auth/login");
         return;
       }
+
+      const firebaseIdToken = await result.user.getIdToken();
+      setFirebaseSession({
+        token: firebaseIdToken,
+        uid: result.user.uid,
+        email: result.user.email ?? "",
+        fullName: result.user.displayName ?? result.user.email ?? "Usuario Google",
+      });
 
       toast.success("Cuenta de Google creada exitosamente", {
         description: `Bienvenido ${result.user.displayName ?? result.user.email ?? ""}`.trim(),
