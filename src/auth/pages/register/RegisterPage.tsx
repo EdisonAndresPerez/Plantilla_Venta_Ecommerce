@@ -19,20 +19,22 @@ import { Link, useNavigate } from "react-router-dom";
 import { useStoreAuth } from "@/auth/store/auth.store";
 import { getAdditionalUserInfo, signInWithPopup, signOut } from "firebase/auth";
 import type { FirebaseError } from "firebase/app";
-import { auth, googleProvider } from "@/firebase/config";
+import { auth, googleProvider, githubProvider } from "@/firebase/config";
 
-const getGoogleAuthErrorMessage = (error: unknown): string => {
+const getSocialAuthErrorMessage = (error: unknown, providerName: string): string => {
   const firebaseError = error as FirebaseError;
 
   switch (firebaseError?.code) {
     case "auth/unauthorized-domain":
       return "Dominio no autorizado. Agrega este dominio en Firebase > Authentication > Settings > Authorized domains.";
     case "auth/operation-not-allowed":
-      return "Google Sign-In no está habilitado. Actívalo en Firebase > Authentication > Sign-in method > Google.";
+      return `${providerName} Sign-In no está habilitado. Actívalo en Firebase > Authentication > Sign-in method.`;
     case "auth/popup-blocked":
       return "El navegador bloqueó la ventana emergente. Habilita popups y vuelve a intentar.";
     case "auth/popup-closed-by-user":
-      return "Cerraste la ventana de Google antes de completar el registro.";
+      return `Cerraste la ventana de ${providerName} antes de completar el registro.`;
+    case "auth/account-exists-with-different-credential":
+      return "Ya existe una cuenta con este correo usando otro método de acceso.";
     case "auth/network-request-failed":
       return "Fallo de red al conectar con Firebase. Revisa tu conexión e inténtalo nuevamente.";
     default:
@@ -73,14 +75,44 @@ export const RegisterPage = () => {
     }
   };
 
-
-  const handleGithubRegister = async() => {
+  const handleGithubRegister = async () => {
     setIsLoading(true);
+    try {
+      const result = await signInWithPopup(auth, githubProvider);
+      const additionalUserInfo = getAdditionalUserInfo(result);
 
+      if (!additionalUserInfo?.isNewUser) {
+        await signOut(auth);
+        toast.error("Esta cuenta de Github ya existe", {
+          description:
+            "Tu cuenta ya está registrada. Ve a iniciar sesión con Github desde Login.",
+        });
+        navigate("/auth/login");
+        return;
+      }
 
-  }
+      const firebaseIdToken = await result.user.getIdToken();
+      setFirebaseSession({
+        token: firebaseIdToken,
+        uid: result.user.uid,
+        email: result.user.email ?? "",
+        fullName: result.user.displayName ?? result.user.email ?? "Usuario Github",
+      });
 
-
+      toast.success("Cuenta de Github creada exitosamente", {
+        description:
+          `Bienvenido ${result.user.displayName ?? result.user.email ?? ""}`.trim(),
+      });
+      navigate("/");
+    } catch (error) {
+      console.error("Github register error:", error);
+      toast.error("No se pudo registrar con Github", {
+        description: getSocialAuthErrorMessage(error, "Github"),
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleGoogleRegister = async () => {
     setIsLoading(true);
@@ -104,17 +136,19 @@ export const RegisterPage = () => {
         token: firebaseIdToken,
         uid: result.user.uid,
         email: result.user.email ?? "",
-        fullName: result.user.displayName ?? result.user.email ?? "Usuario Google",
+        fullName:
+          result.user.displayName ?? result.user.email ?? "Usuario Google",
       });
 
       toast.success("Cuenta de Google creada exitosamente", {
-        description: `Bienvenido ${result.user.displayName ?? result.user.email ?? ""}`.trim(),
+        description:
+          `Bienvenido ${result.user.displayName ?? result.user.email ?? ""}`.trim(),
       });
       navigate("/");
     } catch (error) {
       console.error("Google register error:", error);
       toast.error("No se pudo registrar con Google", {
-        description: getGoogleAuthErrorMessage(error),
+        description: getSocialAuthErrorMessage(error, "Google"),
       });
     } finally {
       setIsLoading(false);
@@ -226,57 +260,56 @@ export const RegisterPage = () => {
 
         {/* Social */}
         <div className="flex flex-col gap-2">
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          <Button
-            variant="outline"
-            type="button"
-            disabled={isLoading}
-            onClick={handleGoogleRegister}
-            className="w-full h-12 bg-transparent border-bunker-border/30 text-bunker-light hover:bg-bunker-border/10 hover:text-bunker-light rounded-xl tracking-wide text-sm cursor-pointer"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
           >
-            <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
-              <path
-                fill="currentColor"
-                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
-              />
-              <path
-                fill="currentColor"
-                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-              />
-              <path
-                fill="currentColor"
-                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-              />
-              <path
-                fill="currentColor"
-                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-              />
-            </svg>
-            Registrarme con Google
-          </Button>
-        </motion.div>
+            <Button
+              variant="outline"
+              type="button"
+              disabled={isLoading}
+              onClick={handleGoogleRegister}
+              className="w-full h-12 bg-transparent border-bunker-border/30 text-bunker-light hover:bg-bunker-border/10 hover:text-bunker-light rounded-xl tracking-wide text-sm cursor-pointer"
+            >
+              <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
+                />
+                <path
+                  fill="currentColor"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                />
+                <path
+                  fill="currentColor"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                />
+                <path
+                  fill="currentColor"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                />
+              </svg>
+              Registrarme con Google
+            </Button>
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          <Button
-            variant="outline"
-            type="button"
-            disabled={isLoading}
-            onClick={handleGithubRegister}
-            className="w-full h-12 bg-transparent border-bunker-border/30 text-bunker-light hover:bg-bunker-border/10 hover:text-bunker-light rounded-xl tracking-wide text-sm cursor-pointer"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
           >
-            <Github className="w-5 h-5 mr-3" />
-            Registrarme con Github
-          </Button>
-        </motion.div>
+            <Button
+              variant="outline"
+              type="button"
+              disabled={isLoading}
+              onClick={handleGithubRegister}
+              className="w-full h-12 bg-transparent border-bunker-border/30 text-bunker-light hover:bg-bunker-border/10 hover:text-bunker-light rounded-xl tracking-wide text-sm cursor-pointer"
+            >
+              <Github className="w-5 h-5 mr-3" />
+              Registrarme con Github
+            </Button>
+          </motion.div>
         </div>
 
         {/* Link to Login */}

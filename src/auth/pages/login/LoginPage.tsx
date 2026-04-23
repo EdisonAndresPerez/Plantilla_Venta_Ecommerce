@@ -1,5 +1,13 @@
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Lock, Mail, ArrowRight, Loader2 } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Lock,
+  Mail,
+  ArrowRight,
+  Loader2,
+  Github,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,20 +18,25 @@ import { useState } from "react";
 import { useStoreAuth } from "@/auth/store/auth.store";
 import { getAdditionalUserInfo, signInWithPopup, signOut } from "firebase/auth";
 import type { FirebaseError } from "firebase/app";
-import { auth, googleProvider } from "@/firebase/config";
+import { auth, githubProvider, googleProvider } from "@/firebase/config";
 
-const getGoogleAuthErrorMessage = (error: unknown): string => {
+const getSocialAuthErrorMessage = (
+  error: unknown,
+  providerName: string,
+): string => {
   const firebaseError = error as FirebaseError;
 
   switch (firebaseError?.code) {
     case "auth/unauthorized-domain":
       return "Dominio no autorizado. Agrega este dominio en Firebase > Authentication > Settings > Authorized domains.";
     case "auth/operation-not-allowed":
-      return "Google Sign-In no está habilitado. Actívalo en Firebase > Authentication > Sign-in method > Google.";
+      return `${providerName} Sign-In no está habilitado. Actívalo en Firebase > Authentication > Sign-in method.`;
     case "auth/popup-blocked":
       return "El navegador bloqueó la ventana emergente. Habilita popups y vuelve a intentar.";
     case "auth/popup-closed-by-user":
-      return "Cerraste la ventana de Google antes de completar el inicio de sesión.";
+      return `Cerraste la ventana de ${providerName} antes de completar el inicio de sesión.`;
+    case "auth/account-exists-with-different-credential":
+      return "Ya existe una cuenta con este correo usando otro método de acceso.";
     case "auth/network-request-failed":
       return "Fallo de red al conectar con Firebase. Revisa tu conexión e inténtalo nuevamente.";
     default:
@@ -90,14 +103,58 @@ const LoginPage = () => {
       });
 
       toast.success("Inicio de sesión con Google exitoso", {
-        description: `Bienvenido ${user.displayName ?? user.email ?? ""}`.trim(),
+        description:
+          `Bienvenido ${user.displayName ?? user.email ?? ""}`.trim(),
       });
 
       navigate("/");
     } catch (error) {
       console.error("Google login error:", error);
       toast.error("No se pudo iniciar con Google", {
-        description: getGoogleAuthErrorMessage(error),
+        description: getSocialAuthErrorMessage(error, "Google"),
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGithubLogin = async () => {
+    setIsLoading(true);
+
+    try {
+      const result = await signInWithPopup(auth, githubProvider);
+      const { user } = result;
+
+      const additionalUserInfo = getAdditionalUserInfo(result);
+
+      if (additionalUserInfo?.isNewUser) {
+        await signOut(auth);
+        toast.error("Cuenta de Github no registrada", {
+          description:
+            "Esta cuenta es nueva. Primero regístrate desde la pantalla de crear cuenta con Github.",
+        });
+        navigate("/auth/register");
+        return;
+      }
+
+      const firebaseIdToken = await user.getIdToken();
+      setFirebaseSession({
+        token: firebaseIdToken,
+        uid: user.uid,
+        email: user.email ?? "",
+        fullName: user.displayName ?? user.email ?? "Usuario Github",
+      });
+
+      toast.success("Inicio de sesión con Github exitoso", {
+        description:
+          `Bienvenido ${user.displayName ?? user.email ?? ""}`.trim(),
+      });
+
+      navigate("/");
+    } catch (error) {
+      console.error("Github login error:", error);
+      toast.error("No se pudo iniciar con Github", {
+        description: getSocialAuthErrorMessage(error, "Github"),
       });
     } finally {
       setIsLoading(false);
@@ -232,6 +289,22 @@ const LoginPage = () => {
               />
             </svg>
             Entrar con Google
+          </Button>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          <Button
+            variant="outline"
+            type="button"
+            disabled={isLoading}
+            onClick={handleGithubLogin}
+            className="w-full h-12 bg-transparent border-bunker-border/30 text-bunker-light hover:bg-bunker-border/10 hover:text-bunker-light rounded-xl tracking-wide text-sm cursor-pointer"
+          >
+            <Github className="w-5 h-5 mr-3" />
+            Entrar con Github
           </Button>
         </motion.div>
 
