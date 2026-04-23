@@ -1,15 +1,16 @@
 import ProductCard from "@/shop_front/components/ProductCard";
 import { useProducts } from "@/shop_front/hooks/useProducts";
 import { useFavoritesStore } from "@/shop_front/store/favorites.store";
+import { useCartStore } from "@/shop_front/store/cart.store";
 
 export const CartPage = () => {
   const { data } = useProducts();
   const favoriteIds = useFavoritesStore((state) => state.favoriteIds);
+  const cartItem = useCartStore((state) => state.cartItems);
 
   const favoriteProducts =
     data?.products.filter((product) => favoriteIds.includes(product.id)) ?? [];
-  
-  
+
   return (
     <div className="min-h-screen bg-background">
       <main className="container max-w-6xl mx-auto px-4 py-8">
@@ -20,14 +21,20 @@ export const CartPage = () => {
           <section className="space-y-4">
             <h2 className="font-bold text-2xl">Comprados</h2>
 
-            {}
-
-            <div className="rounded-2xl border border-dashed border-border bg-muted/20 p-6 text-sm text-muted-foreground">
-              Todavía no existe un store real para el carrito, por eso esta
-              sección sigue vacía. El siguiente paso es crear un
-              <span className="font-medium text-foreground"> cart.store </span>
-              con productos y cantidades.
-            </div>
+            {cartItem.length > 0 ? (
+              <div className="grid gap-4">
+                {cartItem.map(({ product }) => (
+                  <div key={product.id} className="flex items-center gap-4">
+                    <ProductCard product={product} />
+                  
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-dashed border-border bg-muted/20 p-6 text-sm text-muted-foreground">
+                Aún no agregaste productos al carrito.
+              </div>
+            )}
           </section>
 
           <section className="space-y-4">
