@@ -8,7 +8,8 @@ export const CartPage = () => {
 
   const favoriteProducts =
     data?.products.filter((product) => favoriteIds.includes(product.id)) ?? [];
-
+  
+  
   return (
     <div className="min-h-screen bg-background">
       <main className="container max-w-6xl mx-auto px-4 py-8">
@@ -18,6 +19,8 @@ export const CartPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
           <section className="space-y-4">
             <h2 className="font-bold text-2xl">Comprados</h2>
+
+            {}
 
             <div className="rounded-2xl border border-dashed border-border bg-muted/20 p-6 text-sm text-muted-foreground">
               Todavía no existe un store real para el carrito, por eso esta
@@ -33,15 +36,7 @@ export const CartPage = () => {
             {favoriteProducts.length > 0 ? (
               <div className="grid gap-4">
                 {favoriteProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    id={product.id}
-                    name={product.title}
-                    price={product.price}
-                    image={product.images[0]}
-                    category={product.gender}
-                    size={product.sizes}
-                  />
+                  <ProductCard key={product.id} product={product} />
                 ))}
               </div>
             ) : (

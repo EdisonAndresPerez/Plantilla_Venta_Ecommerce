@@ -121,24 +121,14 @@ export const ProductsGrid = ({ products, isLoading = false }: Props) => {
                       : "space-y-6"
                   }
                 >
-                  {isLoading ? (
-                    // Mostrar skeletons para mantener el espacio del grid
-                    Array.from({ length: 9 }).map((_, index) => (
-                      <ProductCardSkeleton key={`skeleton-${index}`} />
-                    ))
-                  ) : (
-                    products.map((product) => (
-                      <ProductCard
-                        key={product.id}
-                        id={product.id}
-                        name={product.title}
-                        price={product.price}
-                        image={product.images[0]}
-                        category={product.gender}
-                        size={product.sizes}
-                      />
-                    ))
-                  )}
+                  {isLoading
+                    ? // Mostrar skeletons para mantener el espacio del grid
+                      Array.from({ length: 9 }).map((_, index) => (
+                        <ProductCardSkeleton key={`skeleton-${index}`} />
+                      ))
+                    : products.map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                      ))}
                 </div>
               )}
             </div>
