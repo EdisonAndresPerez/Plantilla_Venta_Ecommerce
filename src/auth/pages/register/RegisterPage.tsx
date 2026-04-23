@@ -8,6 +8,7 @@ import {
   ArrowRight,
   Loader2,
   User,
+  Github,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,6 +72,15 @@ export const RegisterPage = () => {
       });
     }
   };
+
+
+  const handleGithubRegister = async() => {
+    setIsLoading(true);
+
+
+  }
+
+
 
   const handleGoogleRegister = async () => {
     setIsLoading(true);
@@ -215,6 +225,8 @@ export const RegisterPage = () => {
         </div>
 
         {/* Social */}
+        <div className="flex flex-col gap-2">
+
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -248,6 +260,24 @@ export const RegisterPage = () => {
             Registrarme con Google
           </Button>
         </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          <Button
+            variant="outline"
+            type="button"
+            disabled={isLoading}
+            onClick={handleGithubRegister}
+            className="w-full h-12 bg-transparent border-bunker-border/30 text-bunker-light hover:bg-bunker-border/10 hover:text-bunker-light rounded-xl tracking-wide text-sm cursor-pointer"
+          >
+            <Github className="w-5 h-5 mr-3" />
+            Registrarme con Github
+          </Button>
+        </motion.div>
+        </div>
 
         {/* Link to Login */}
         <div className="text-center mt-6">
