@@ -6,6 +6,8 @@ import { Heart, Minus, Plus, ShoppingBag, Trash2, ArrowRight, Package, Sparkles 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import type { Product } from "@/interfaces/product.interface";
+import { use } from "react";
+import { useStoreAuth } from "@/auth/store/auth.store";
 
 /* ─── Compact Cart Item Card ─── */
 const CartItemCard = ({
@@ -85,6 +87,7 @@ const CartItemCard = ({
   );
 };
 
+
 /* ─── Compact Favorite Item ─── */
 const FavoriteItemCard = ({ product }: { product: Product }) => {
   const toggleFavorite = useFavoritesStore((s) => s.toggleFavorite);
@@ -153,6 +156,7 @@ export const CartPage = () => {
   const getTotalPrice = useCartStore((state) => state.getTotalPrice);
   const clearCart = useCartStore((state) => state.clearCart);
   const navigate = useNavigate();
+  const { user } = useStoreAuth();
 
   const favoriteProducts =
     data?.products.filter((product) => favoriteIds.includes(product.id)) ?? [];
@@ -189,7 +193,7 @@ export const CartPage = () => {
                   <Package className="h-4 w-4 text-primary" />
                   Productos en el carrito
                 </h2>
-                {cartItems.length > 0 && (
+                {user && cartItems.length > 0 && (
                   <button
                     onClick={clearCart}
                     className="cursor-pointer text-xs text-muted-foreground hover:text-destructive transition-colors flex items-center gap-1"
@@ -200,7 +204,23 @@ export const CartPage = () => {
                 )}
               </div>
 
-              {cartItems.length > 0 ? (
+              {!user ? (
+                <div className="rounded-xl border border-dashed border-border bg-muted/20 p-8 text-center mt-4">
+                  <ShoppingBag className="h-10 w-10 mx-auto text-muted-foreground/40 mb-3" />
+                  <p className="text-sm font-medium mb-1">Inicia sesión para ver tu carrito</p>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    Ponte al día con tus productos guardados y finaliza tu compra.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Button size="sm" className="rounded-full  bg-yellow-500 hover:bg-amber-400 text-black cursor-pointer px-6" onClick={() => navigate("/auth/login")}>
+                      Iniciar sesión
+                    </Button>
+                    <Button variant="outline" size="sm" className="rounded-full cursor-pointer px-6" onClick={() => navigate("/auth/register")}>
+                      Registrarse
+                    </Button>
+                  </div>
+                </div>
+              ) : cartItems.length > 0 ? (
                 <div className="space-y-2">
                   {cartItems.map(({ product, quantity, size }) => (
                     <CartItemCard
@@ -212,7 +232,7 @@ export const CartPage = () => {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-xl border border-dashed border-border bg-muted/20 p-8 text-center">
+                <div className="rounded-xl border border-dashed border-border bg-muted/20 p-8 text-center mt-4">
                   <ShoppingBag className="h-10 w-10 mx-auto text-muted-foreground/40 mb-3" />
                   <p className="text-sm text-muted-foreground">
                     Aún no agregaste productos al carrito.
@@ -220,7 +240,7 @@ export const CartPage = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="mt-3 rounded-full text-xs cursor-pointer"
+                    className="mt-3 rounded-full text-xs cursor-pointer px-6"
                     onClick={() => navigate("/")}
                   >
                     Explorar productos
@@ -282,7 +302,7 @@ export const CartPage = () => {
                 </div>
 
                 <Button
-                  disabled={cartItems.length === 0}
+                  disabled={cartItems.length === 0 || !user}
                   className="cursor-pointer w-full rounded-full h-11 button-gradient font-semibold gap-2 text-sm"
                 >
                   Proceder al pago
