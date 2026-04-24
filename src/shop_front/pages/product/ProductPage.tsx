@@ -15,6 +15,7 @@ export const ProductPage = () => {
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
 
   const {
     data: product,
@@ -32,7 +33,10 @@ export const ProductPage = () => {
   const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
   const { user } = useStoreAuth();
   const toggleCart = useCartStore((state) => state.toggleCart);
-  const isInCart = useCartStore((state) => state.isInCart(product?.id ?? ""));
+  
+  const isInCart = useCartStore((state) =>
+    state.isInCart(product?.id ?? "", selectedSize),
+  );
 
   if (!idSlug) return <Navigate to="/" replace />;
   if (isLoading) return <Loading />;
@@ -124,15 +128,22 @@ export const ProductPage = () => {
             </p>
 
             <div>
-              <p className="text-sm font-semibold mb-3">Tallas disponibles</p>
+              <p className="text-sm font-semibold mb-3">
+                Tallas disponibles <span className="text-red-500">*</span>
+              </p>
               <div className="flex flex-wrap gap-2">
                 {product.sizes.map((size) => (
-                  <span
+                  <button
                     key={size}
-                    className="inline-flex items-center px-3 py-1 rounded-md border border-border text-sm"
+                    onClick={() => setSelectedSize(size)}
+                    className={`inline-flex items-center px-4 py-1.5 rounded-md border text-sm font-medium transition-all ${
+                      selectedSize === size
+                        ? "border-primary bg-primary text-white"
+                        : "border-border hover:border-primary/50 text-foreground"
+                    }`}
                   >
                     {size}
-                  </span>
+                  </button>
                 ))}
               </div>
             </div>
@@ -159,20 +170,22 @@ export const ProductPage = () => {
             </div>
 
             <Button
-              disabled={!user}
+              disabled={!user || !selectedSize}
               onClick={() => {
-                toggleCart(product, quantity);
+                toggleCart(product, quantity, selectedSize);
               }}
               className={`h-12 rounded-xl text-sm font-semibold gap-2 ${
-                isInCart ? "bg-red-500 hover:bg-red-600" : ""
+                isInCart && selectedSize ? "bg-red-500 hover:bg-red-600" : ""
               }`}
             >
               <ShoppingBag className="w-5 h-5" />
               {!user
                 ? "Inicia sesión para comprar"
-                : isInCart
-                  ? "Quitar del carrito"
-                  : "Agregar al carrito"}
+                : !selectedSize
+                  ? "Selecciona una talla"
+                  : isInCart
+                    ? "Quitar del carrito"
+                    : "Agregar al carrito"}
             </Button>
           </div>
         </div>

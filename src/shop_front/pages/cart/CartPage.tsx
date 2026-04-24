@@ -11,9 +11,11 @@ import type { Product } from "@/interfaces/product.interface";
 const CartItemCard = ({
   product,
   quantity,
+  size,
 }: {
   product: Product;
   quantity: number;
+  size: string;
 }) => {
   const removeFromCart = useCartStore((s) => s.removeFromCart);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
@@ -42,7 +44,7 @@ const CartItemCard = ({
           {product.title}
         </h3>
         <p className="text-xs text-muted-foreground mt-0.5">
-          Tallas: {product.sizes.join(", ")}
+          Talla: <span className="font-medium text-foreground">{size}</span>
         </p>
         <p className="text-sm sm:text-base font-bold text-gradient mt-1">
           {formatPrice(product.price)}
@@ -52,14 +54,14 @@ const CartItemCard = ({
       {/* Quantity controls */}
       <div className="flex items-center gap-1.5 sm:gap-2">
         <button
-          onClick={() => updateQuantity(product.id, quantity - 1)}
+          onClick={() => updateQuantity(product.id, size, quantity - 1)}
           className="cursor-pointer h-7 w-7 sm:h-8 sm:w-8 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all duration-200"
         >
           <Minus className="h-3 w-3" />
         </button>
         <span className="text-sm font-semibold w-6 text-center">{quantity}</span>
         <button
-          onClick={() => updateQuantity(product.id, quantity + 1)}
+          onClick={() => updateQuantity(product.id, size, quantity + 1)}
           className="cursor-pointer h-7 w-7 sm:h-8 sm:w-8 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all duration-200"
         >
           <Plus className="h-3 w-3" />
@@ -72,7 +74,7 @@ const CartItemCard = ({
           {formatPrice(product.price * quantity)}
         </span>
         <button
-          onClick={() => removeFromCart(product.id)}
+          onClick={() => removeFromCart(product.id, size)}
           className="cursor-pointer text-muted-foreground hover:text-destructive transition-colors p-1"
           title="Eliminar"
         >
@@ -200,11 +202,12 @@ export const CartPage = () => {
 
               {cartItems.length > 0 ? (
                 <div className="space-y-2">
-                  {cartItems.map(({ product, quantity }) => (
+                  {cartItems.map(({ product, quantity, size }) => (
                     <CartItemCard
-                      key={product.id}
+                      key={`${product.id}-${size}`}
                       product={product}
                       quantity={quantity}
+                      size={size}
                     />
                   ))}
                 </div>
