@@ -7,6 +7,8 @@ import { ChevronLeft, Heart, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useFavoritesStore } from "@/shop_front/store/favorites.store";
+import { useCartStore } from "@/shop_front/store/cart.store";
+import { useStoreAuth } from "@/auth/store/auth.store";
 
 export const ProductPage = () => {
   const { idSlug } = useParams();
@@ -14,7 +16,11 @@ export const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState("");
 
-  const { data: product, isLoading, isError } = useQuery({
+  const {
+    data: product,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["product", { id: idSlug }],
     queryFn: () => getProductById(idSlug || ""),
     retry: false,
@@ -24,6 +30,9 @@ export const ProductPage = () => {
     state.isFavorite(product?.id ?? ""),
   );
   const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
+  const { user } = useStoreAuth();
+  const toggleCart = useCartStore((state) => state.toggleCart);
+  const isInCart = useCartStore((state) => state.isInCart(product?.id ?? ""));
 
   if (!idSlug) return <Navigate to="/" replace />;
   if (isLoading) return <Loading />;
@@ -42,7 +51,9 @@ export const ProductPage = () => {
             <ChevronLeft className="w-5 h-5" />
             <span className="text-sm font-medium">Volver</span>
           </button>
-          <h1 className="font-semibold text-lg tracking-tight">Detalles del producto</h1>
+          <h1 className="font-semibold text-lg tracking-tight">
+            Detalles del producto
+          </h1>
         </div>
       </header>
 
@@ -68,7 +79,11 @@ export const ProductPage = () => {
                       : "border-border hover:border-primary/50"
                   }`}
                 >
-                  <img src={image} alt={product.title} className="w-full h-20 object-cover" />
+                  <img
+                    src={image}
+                    alt={product.title}
+                    className="w-full h-20 object-cover"
+                  />
                 </button>
               ))}
             </div>
@@ -85,7 +100,9 @@ export const ProductPage = () => {
               <h2 className="text-3xl lg:text-4xl font-bold tracking-tight leading-tight">
                 {product.title}
               </h2>
-              <p className="mt-3 text-3xl font-bold">{formatPrice(product.price)}</p>
+              <p className="mt-3 text-3xl font-bold">
+                {formatPrice(product.price)}
+              </p>
             </div>
 
             <button
@@ -96,11 +113,15 @@ export const ProductPage = () => {
                   : "border border-border bg-background hover:bg-muted"
               }`}
             >
-              <Heart className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} />
+              <Heart
+                className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`}
+              />
               {isFavorite ? "Quitar de favoritos" : "Agregar a favoritos"}
             </button>
 
-            <p className="text-muted-foreground leading-relaxed">{product.description}</p>
+            <p className="text-muted-foreground leading-relaxed">
+              {product.description}
+            </p>
 
             <div>
               <p className="text-sm font-semibold mb-3">Tallas disponibles</p>
@@ -109,7 +130,6 @@ export const ProductPage = () => {
                   <span
                     key={size}
                     className="inline-flex items-center px-3 py-1 rounded-md border border-border text-sm"
-                    
                   >
                     {size}
                   </span>
@@ -138,9 +158,21 @@ export const ProductPage = () => {
               </div>
             </div>
 
-            <Button className="h-12 rounded-xl text-sm font-semibold gap-2">
+            <Button
+              disabled={!user}
+              onClick={() => {
+                toggleCart(product);
+              }}
+              className={`h-12 rounded-xl text-sm font-semibold gap-2 ${
+                isInCart ? "bg-red-500 hover:bg-red-600" : ""
+              }`}
+            >
               <ShoppingBag className="w-5 h-5" />
-              Agregar al carrito
+              {!user
+                ? "Inicia sesión para comprar"
+                : isInCart
+                  ? "Quitar del carrito"
+                  : "Agregar al carrito"}
             </Button>
           </div>
         </div>
