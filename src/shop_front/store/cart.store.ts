@@ -9,14 +9,14 @@ interface CartItem {
 
 interface CartStore {
   cartItems: CartItem[];
-  addToCart: (product: Product) => void;
+  addToCart: (product: Product, quantity?: number) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
   isInCart: (productId: string) => boolean;
-  toggleCart: (product: Product) => void;
+  toggleCart: (product: Product, quantity?: number) => void;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -24,23 +24,23 @@ export const useCartStore = create<CartStore>()(
     (set, get) => ({
       cartItems: [],
 
-      addToCart: (product: Product) => {
+      addToCart: (product: Product, quantity: number = 1) => {
         const { cartItems } = get();
         const existing = cartItems.find((i) => i.product.id === product.id);
 
         if (existing) {
-          // Si ya existe, solo incrementa la cantidad
+          // Si ya existe, actualiza sumando la nueva cantidad
           set({
             cartItems: cartItems.map((i) =>
               i.product.id === product.id
-                ? { ...i, quantity: i.quantity + 1 }
+                ? { ...i, quantity: i.quantity + quantity }
                 : i,
             ),
           });
           return;
         }
 
-        set({ cartItems: [...cartItems, { product, quantity: 1 }] });
+        set({ cartItems: [...cartItems, { product, quantity }] });
       },
 
       removeFromCart: (productId: string) =>
@@ -63,12 +63,12 @@ export const useCartStore = create<CartStore>()(
       isInCart: (productId: string) =>
         get().cartItems.some((i) => i.product.id === productId),
 
-      toggleCart: (product: Product) => {
+      toggleCart: (product: Product, quantity: number = 1) => {
         const { isInCart, addToCart, removeFromCart } = get();
         if (isInCart(product.id)) {
           removeFromCart(product.id);
         } else {
-          addToCart(product);
+          addToCart(product, quantity);
         }
       },
 

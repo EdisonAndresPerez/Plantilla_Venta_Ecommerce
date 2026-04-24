@@ -161,7 +161,7 @@ export const ProductPage = () => {
             <Button
               disabled={!user}
               onClick={() => {
-                toggleCart(product);
+                toggleCart(product, quantity);
               }}
               className={`h-12 rounded-xl text-sm font-semibold gap-2 ${
                 isInCart ? "bg-red-500 hover:bg-red-600" : ""
