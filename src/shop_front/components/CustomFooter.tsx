@@ -29,10 +29,10 @@ export const CustomFooter = () => {
                 {
                   title: "Productos",
                   links: [
-                    { label: "Camisetas", to: "/gender/men" },
-                    { label: "Sudaderas", to: "/gender/women" },
-                    { label: "Chaquetas", to: "/gender/kid" },
-                    { label: "Accesorios", to: "/gender/unisex" },
+                    { label: "Camisetas", to: "/gender/camisetas" },
+                    { label: "Sudaderas", to: "/gender/sudaderas" },
+                    { label: "Chaquetas", to: "/gender/chaquetas" },
+                    { label: "Accesorios", to: "/gender/accesorios" },
                   ],
                 },
                 {
