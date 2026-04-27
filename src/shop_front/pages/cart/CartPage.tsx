@@ -175,9 +175,11 @@ export const CartPage = () => {
           <div>
             <h1 className="font-bold text-2xl sm:text-3xl">Carrito de Compras</h1>
             <p className="text-sm text-muted-foreground">
-              {totalItems > 0
-                ? `${totalItems} ${totalItems === 1 ? "producto" : "productos"} en tu carrito`
-                : "Tu carrito está vacío"}
+              {!user
+                ? "Inicia sesión para ver tus productos"
+                : totalItems > 0
+                  ? `${totalItems} ${totalItems === 1 ? "producto" : "productos"} en tu carrito`
+                  : "Tu carrito está vacío"}
             </p>
           </div>
         </div>
