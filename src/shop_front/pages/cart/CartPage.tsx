@@ -6,7 +6,6 @@ import { Heart, Minus, Plus, ShoppingBag, Trash2, ArrowRight, Package, Sparkles 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import type { Product } from "@/interfaces/product.interface";
-import { use } from "react";
 import { useStoreAuth } from "@/auth/store/auth.store";
 
 /* ─── Compact Cart Item Card ─── */
