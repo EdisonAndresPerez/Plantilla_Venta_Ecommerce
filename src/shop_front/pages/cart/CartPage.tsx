@@ -184,9 +184,9 @@ export const CartPage = () => {
         </div>
         <div className="w-full border-t border-border/50 mt-4 mb-6 sm:mb-8" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-          {/* ─── Left Column: Cart Items + Favorites ─── */}
-          <div className="lg:col-span-2 space-y-6">
+        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 lg:gap-8">
+          {/* ─── Left Column: Cart Items ─── */}
+          <div className="lg:col-span-2 space-y-6 order-1">
             {/* Cart Items */}
             <section>
               <div className="flex items-center justify-between mb-3">
@@ -249,38 +249,10 @@ export const CartPage = () => {
                 </div>
               )}
             </section>
-
-            {/* Favorites */}
-            <section>
-              <h2 className="font-bold text-lg flex items-center gap-2 mb-3">
-                <Sparkles className="h-4 w-4 text-yellow-500" />
-                Favoritos
-                {favoriteProducts.length > 0 && (
-                  <span className="text-xs font-normal text-muted-foreground">
-                    ({favoriteProducts.length})
-                  </span>
-                )}
-              </h2>
-
-              {favoriteProducts.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {favoriteProducts.map((product) => (
-                    <FavoriteItemCard key={product.id} product={product} />
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-xl border border-dashed border-border bg-muted/20 p-6 text-center">
-                  <Heart className="h-8 w-8 mx-auto text-muted-foreground/40 mb-2" />
-                  <p className="text-sm text-muted-foreground">
-                    Marca el corazón en un producto para que aparezca aquí.
-                  </p>
-                </div>
-              )}
-            </section>
           </div>
 
           {/* ─── Right Column: Order Summary ─── */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 order-2">
             <div className="sticky top-24 space-y-4">
               <div className="rounded-xl border border-border bg-card p-5 sm:p-6 space-y-4">
                 <h2 className="font-bold text-lg">Resumen del pedido</h2>
@@ -336,6 +308,37 @@ export const CartPage = () => {
               </div>
             </div>
           </div>
+
+          {/* ─── Bottom Section: Favorites ─── */}
+          <div className="lg:col-span-2 space-y-6 order-3 mt-6 lg:mt-0">
+            <section>
+              <h2 className="font-bold text-lg flex items-center gap-2 mb-3">
+                <Sparkles className="h-4 w-4 text-yellow-500" />
+                Favoritos
+                {favoriteProducts.length > 0 && (
+                  <span className="text-xs font-normal text-muted-foreground">
+                    ({favoriteProducts.length})
+                  </span>
+                )}
+              </h2>
+
+              {favoriteProducts.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {favoriteProducts.map((product) => (
+                    <FavoriteItemCard key={product.id} product={product} />
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-xl border border-dashed border-border bg-muted/20 p-6 text-center">
+                  <Heart className="h-8 w-8 mx-auto text-muted-foreground/40 mb-2" />
+                  <p className="text-sm text-muted-foreground">
+                    Marca el corazón en un producto para que aparezca aquí.
+                  </p>
+                </div>
+              )}
+            </section>
+          </div>
+
         </div>
       </main>
     </div>

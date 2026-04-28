@@ -77,7 +77,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
 
           {/* Quick add button */}
-          <div className=" absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+          <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
             <Button
               disabled={!user}
               onClick={(e) => {

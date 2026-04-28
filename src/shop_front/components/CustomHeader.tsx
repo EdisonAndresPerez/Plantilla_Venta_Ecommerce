@@ -97,13 +97,13 @@ export const CustomHeader = () => {
 
             {/* Search and Cart */}
             <div className="flex items-center space-x-2 sm:space-x-3">
-              {/* Search Desktop */}
-              <div className="hidden lg:flex items-center">
+              {/* Search */}
+              <div className="hidden md:flex items-center">
                 <form className="relative group" onSubmit={handleSearchSubmit}>
                   <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Input
                     placeholder="Buscar productos..."
-                    className="pl-11 w-48 xl:w-64 h-11 rounded-full border-2 border-transparent bg-muted/50 focus:border-primary focus:bg-white transition-all duration-300"
+                    className="pl-11 w-40 sm:w-48 xl:w-64 h-11 rounded-full border-2 border-transparent bg-muted/50 focus:border-primary focus:bg-white transition-all duration-300"
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                   />
@@ -114,13 +114,14 @@ export const CustomHeader = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden hover:bg-primary/10 rounded-full"
+                className="md:hidden hover:bg-primary/10 rounded-full"
+                onClick={() => setMobileMenuOpen(true)}
               >
                 <Search className="h-5 w-5" />
               </Button>
 
-              {/* Auth Buttons - Hidden on small mobile */}
-              <div className="hidden sm:flex items-center gap-2">
+              {/* Auth Buttons - Desktop */}
+              <div className="hidden md:flex items-center gap-2">
                 {authStatus === "not-authenticated" ? (
                   <Link to="/auth/login">
                     <Button
@@ -128,8 +129,7 @@ export const CustomHeader = () => {
                       size="sm"
                       className="cursor-pointer text-xs bg-yellow-500 hover:bg-amber-400 text-black font-semibold"
                     >
-                      <span className="hidden lg:inline ">Iniciar Sesión</span>
-                      <span className="lg:hidden">Login</span>
+                      <span>Iniciar Sesión</span>
                     </Button>
                   </Link>
                 ) : (
@@ -139,14 +139,13 @@ export const CustomHeader = () => {
                     className="cursor-pointer text-xs"
                     onClick={logout}
                   >
-                    <span className="hidden lg:inline">Cerrar Sesión</span>
-                    <span className="lg:hidden">Salir</span>
+                    <span>Cerrar Sesión</span>
                   </Button>
                 )}
 
                 {isAdmin() && (
-                  <Link to="/admin" className="hidden xl:inline-block">
-                    <Button variant="default" size="sm" className="cursor-pointer text-xs  bg-yellow-500 hover:bg-amber-400  text-black  font-semibold">
+                  <Link to="/admin" className="hidden lg:inline-block">
+                    <Button variant="default" size="sm" className="cursor-pointer text-xs bg-yellow-500 hover:bg-amber-400 text-black font-semibold">
                       Panel Administrativo
                     </Button>
                   </Link>
@@ -187,6 +186,17 @@ export const CustomHeader = () => {
 
           {/* Menu Content */}
           <div className="relative bg-background border-b border-border shadow-lg">
+            <div className="p-4 border-b border-border md:hidden">
+              <form className="relative" onSubmit={(e) => { handleSearchSubmit(e); setMobileMenuOpen(false); }}>
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar productos..."
+                  className="pl-9 w-full h-10 rounded-full border-2 border-border bg-muted/50 focus:border-primary focus:bg-white transition-all"
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                />
+              </form>
+            </div>
             <nav className="container mx-auto px-4 py-4 space-y-1">
               {navLinks.map((link) => (
                 <Link

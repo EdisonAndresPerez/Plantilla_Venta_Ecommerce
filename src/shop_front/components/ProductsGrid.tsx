@@ -54,7 +54,7 @@ export const ProductsGrid = ({ products, isLoading = false }: Props) => {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
-                className="lg:hidden rounded-full border-2 hover:bg-primary hover:text-white hover:border-primary flex-1 sm:flex-none"
+                className="lg:hidden rounded-full border-2 cursor-pointer hover:bg-primary hover:text-white hover:border-primary flex-1 sm:flex-none"
               >
                 <Filter className="h-4 w-4 mr-2" />
                 Filtros
@@ -65,7 +65,7 @@ export const ProductsGrid = ({ products, isLoading = false }: Props) => {
                   variant={viewMode === "grid" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => handleViewModeChange("grid")}
-                  className={`rounded-none ${
+                  className={`rounded-none cursor-pointer ${
                     viewMode === "grid" ? "button-gradient" : ""
                   }`}
                 >
@@ -75,7 +75,7 @@ export const ProductsGrid = ({ products, isLoading = false }: Props) => {
                   variant={viewMode === "list" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => handleViewModeChange("list")}
-                  className={`rounded-none ${
+                  className={`rounded-none cursor-pointer ${
                     viewMode === "list" ? "button-gradient" : ""
                   }`}
                 >
@@ -99,8 +99,8 @@ export const ProductsGrid = ({ products, isLoading = false }: Props) => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleViewModeChange("grid")}
-                    className="rounded-full hover:bg-primary/10"
+                    onClick={() => setShowFilters(false)}
+                    className="rounded-full cursor-pointer hover:bg-primary/10"
                   >
                     Cerrar
                   </Button>
