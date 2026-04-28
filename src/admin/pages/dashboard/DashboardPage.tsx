@@ -1,6 +1,6 @@
 import { AdminTitle } from "@/admin/components/AdminTitle";
 import { Card, CardContent } from "@/components/ui/card";
-import { Package, Box, DollarSign, TrendingUp } from "lucide-react";
+import { Package, Box } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getProductsAction } from "@/shop_front/actions/get-products-action";
 import { formatPrice } from "@/lib/currency-formatter";
