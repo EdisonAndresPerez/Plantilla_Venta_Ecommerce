@@ -2,7 +2,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useProduct } from "@/admin/hooks/useProduct";
 import { Loading } from "@/components/Loading";
-import { AdminProductForm } from "./ui/AdminProductForm";
+import { AdminProductForm } from "@/admin/components/AdminProductForm";
 import type { Product } from "@/interfaces/product.interface";
 
 export const AdminProductFormPage = () => {

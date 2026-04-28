@@ -232,17 +232,6 @@ export const AboutPage = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-10">
-        <div className="container mx-auto px-4 max-w-6xl flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <div className="font-black text-foreground text-lg">
-            Bunker<span className="text-yellow-500">|</span>Shop
-          </div>
-          <div>
-            © {new Date().getFullYear()} Bunker|Shop. Moda urbana y exclusiva.
-          </div>
-        </div>
-      </footer>
     </>
   );
 };

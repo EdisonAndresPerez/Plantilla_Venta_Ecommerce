@@ -1,72 +1,50 @@
 import { AdminTitle } from "@/admin/components/AdminTitle";
 import { Card, CardContent } from "@/components/ui/card";
 import { Package, Box, DollarSign, TrendingUp } from "lucide-react";
-
-const stats = [
-  {
-    title: "PRODUCTOS",
-    value: "6",
-    subtitle: "+2 este mes",
-    icon: Package,
-    color: "text-yellow-500",
-  },
-  {
-    title: "STOCK TOTAL",
-    value: "103",
-    subtitle: "103 unidades",
-    icon: Box,
-    color: "text-yellow-500",
-  },
-  {
-    title: "VALOR INVENTARIO",
-    value: "$8028,97",
-    subtitle: "",
-    icon: DollarSign,
-    color: "text-yellow-500",
-  },
-  {
-    title: "ACTIVOS",
-    value: "4",
-    subtitle: "67%",
-    icon: TrendingUp,
-    color: "text-yellow-500",
-  },
-];
-
-const recentProducts = [
-  {
-    name: "TACTICAL CARGO PANTS",
-    category: "Pantalones",
-    price: "$89.99",
-    status: "ACTIVO",
-  },
-  {
-    name: "URBAN BOMBER JACKET",
-    category: "Chaquetas",
-    price: "$159.99",
-    status: "ACTIVO",
-  },
-  {
-    name: "STEALTH HOODIE",
-    category: "Hoodies",
-    price: "$74.99",
-    status: "AGOTADO",
-  },
-  {
-    name: "MIDNIGHT TEE",
-    category: "Camisetas",
-    price: "$34.99",
-    status: "ACTIVO",
-  },
-  {
-    name: "COMBAT BOOTS",
-    category: "Calzado",
-    price: "$199.99",
-    status: "ACTIVO",
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { getProductsAction } from "@/shop_front/actions/get-products-action";
+import { formatPrice } from "@/lib/currency-formatter";
+import { Loading } from "@/components/Loading";
 
 export const DashboardPage = () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin-products-dashboard", { limit: 100 }],
+    queryFn: () => getProductsAction({ limit: 100 }),
+  });
+
+  if (isLoading) return <Loading />;
+
+  const products = data?.products || [];
+  const totalProducts = data?.count || products.length;
+
+  const totalStock = products.reduce((acc, p) => acc + p.stock, 0);
+
+  const stats = [
+    {
+      title: "PRODUCTOS",
+      value: totalProducts.toString(),
+      subtitle: "Total De productos",
+      icon: Package,
+      color: "text-yellow-500",
+    },
+    {
+      title: "STOCK TOTAL",
+      value: totalStock.toString(),
+      subtitle: `${totalStock} unidades`,
+      icon: Box,
+      color: "text-yellow-500",
+    },
+  ];
+
+  // Últimos 5 productos del array
+  const recentProducts = products.slice(0, 5).map(p => ({
+    id: p.id,
+    name: p.title,
+    category: p.gender,
+    price: formatPrice(p.price),
+    status: p.stock > 0 ? "ACTIVO" : "AGOTADO",
+  }));
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -127,9 +105,9 @@ export const DashboardPage = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {recentProducts.map((product, index) => (
+                  {recentProducts.map((product) => (
                     <tr
-                      key={index}
+                      key={product.id}
                       className="hover:bg-muted/50 transition-colors"
                     >
                       <td className="px-4 py-4 font-mono text-sm font-medium text-foreground sm:px-6">
