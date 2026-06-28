@@ -277,6 +277,7 @@ export const CartPage = () => {
                 <Button
                   disabled={cartItems.length === 0 || !user}
                   className="cursor-pointer w-full rounded-full h-11 button-gradient font-semibold gap-2 text-sm"
+                  onClick={() => navigate("/checkout")}
                 >
                   Proceder al pago
                   <ArrowRight className="h-4 w-4" />

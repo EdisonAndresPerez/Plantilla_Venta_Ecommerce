@@ -49,6 +49,8 @@ export const useStoreAuth = create<authStore>()((set, get) => ({
     console.log({ email, password });
     try {
       const data = await loginAction(email, password);
+      localStorage.removeItem("firebase_token");
+      localStorage.removeItem("firebase_user");
       localStorage.setItem("token", data.token);
       set({ user: data.user, token: data.token, authStatus: "authenticated" });
       return true;
@@ -63,6 +65,8 @@ export const useStoreAuth = create<authStore>()((set, get) => ({
   register: async (fullName, email, password) => {
     try {
       const data = await registerAction(fullName, email, password);
+      localStorage.removeItem("firebase_token");
+      localStorage.removeItem("firebase_user");
       localStorage.setItem("token", data.token);
       set({ user: data.user, token: data.token, authStatus: "authenticated" });
       return true;
@@ -83,6 +87,18 @@ export const useStoreAuth = create<authStore>()((set, get) => ({
   },
 
   checkAuthStatus: async () => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      try {
+        const { user, token: newToken } = await checkAuthAction();
+        set({ user, token: newToken, authStatus: "authenticated" });
+        return true;
+      } catch {
+        localStorage.removeItem("token");
+      }
+    }
+
     const firebaseToken = localStorage.getItem("firebase_token");
     const firebaseUser = localStorage.getItem("firebase_user");
 
@@ -91,7 +107,7 @@ export const useStoreAuth = create<authStore>()((set, get) => ({
         const parsedFirebaseUser = JSON.parse(firebaseUser) as User;
         set({
           user: parsedFirebaseUser,
-          token: firebaseToken,
+          token: "",
           authStatus: "authenticated",
         });
         return true;
@@ -102,19 +118,8 @@ export const useStoreAuth = create<authStore>()((set, get) => ({
       }
     }
 
-    try {
-      const { user, token } = await checkAuthAction();
-      set({
-        user: user,
-        token: token,
-        authStatus: "authenticated",
-      });
-      return true;
-    } catch (error) {
-      console.log(error);
-      set({ user: null, token: null, authStatus: "not-authenticated" });
-      return false;
-    }
+    set({ user: null, token: null, authStatus: "not-authenticated" });
+    return false;
   },
 
   setFirebaseSession: ({ token, uid, email, fullName }) => {

@@ -13,14 +13,18 @@ import { AdminProductsListPage } from "./admin/pages/products/AdminProductsListP
 import { DashboardPage } from "./admin/pages/dashboard/DashboardPage";
 import { SmartRedirect } from "./components/SmartRedirect";
 import { AboutPage } from "./shop_front/pages/about/AboutPage";
-import { AdminAuthenticatedRoute,  NoAuthenticatedRoute } from "./components/routes/ProtectedRoutes";
+import { AdminAuthenticatedRoute,  NoAuthenticatedRoute, AuthenticatedRoute } from "./components/routes/ProtectedRoutes";
 import { CartPage } from "./shop_front/pages/cart/CartPage";
+import { CheckoutPage } from "./shop_front/pages/checkout/CheckoutPage";
+import { PaymentPage } from "./shop_front/pages/checkout/PaymentPage";
+import { OrderConfirmPage } from "./shop_front/pages/orders/OrderConfirmPage";
+import { OrdersListPage } from "./shop_front/pages/orders/OrdersListPage";
+
 
 
 
 const AuthLayoutLazy = lazy(() => import("./auth/layouts/AuthLayout"));
 const AdminLayoutLazy = lazy(() => import("./admin/layouts/AdminLayout"));
-
 
 
 
@@ -103,6 +107,48 @@ export const AppRouter = createHashRouter([
       {
         path: "*",
         element: <Navigate to="/admin" replace />,
+      },
+    ],
+  },
+
+  //Rutas protegidas del carrito y pagos
+  {
+    path: "/checkout",
+    element: <AuthenticatedRoute><ShopLayout /></AuthenticatedRoute>,
+    children: [
+      {
+        index: true,
+        element: <CheckoutPage />,
+      },
+    ],
+  },
+  {
+    path: "/payment/:orderId",
+    element: <AuthenticatedRoute><ShopLayout /></AuthenticatedRoute>,
+    children: [
+      {
+        index: true,
+        element: <PaymentPage />,
+      },
+    ],
+  },
+  {
+    path: "/order/:orderId",
+    element: <ShopLayout />,
+    children: [
+      {
+        index: true,
+        element: <OrderConfirmPage />,
+      },
+    ],
+  },
+  {
+    path: "/orders",
+    element: <AuthenticatedRoute><ShopLayout /></AuthenticatedRoute>,
+    children: [
+      {
+        index: true,
+        element: <OrdersListPage />,
       },
     ],
   },

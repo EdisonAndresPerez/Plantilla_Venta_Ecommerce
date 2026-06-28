@@ -133,14 +133,21 @@ export const CustomHeader = () => {
                     </Button>
                   </Link>
                 ) : (
-                  <Button 
-                    variant="default" 
-                    size="sm" 
-                    className="cursor-pointer text-xs"
-                    onClick={logout}
-                  >
-                    <span>Cerrar Sesión</span>
-                  </Button>
+                  <>
+                    <Link to="/orders">
+                      <Button variant="ghost" size="sm" className="cursor-pointer text-xs">
+                        Mis Órdenes
+                      </Button>
+                    </Link>
+                    <Button 
+                      variant="default" 
+                      size="sm" 
+                      className="cursor-pointer text-xs"
+                      onClick={logout}
+                    >
+                      <span>Cerrar Sesión</span>
+                    </Button>
+                  </>
                 )}
 
                 {isAdmin() && (
@@ -222,16 +229,23 @@ export const CustomHeader = () => {
                     </Button>
                   </Link>
                 ) : (
-                  <Button 
-                    variant="default" 
-                    className="w-full cursor-pointer"
-                    onClick={() => {
-                      logout();
-                      setMobileMenuOpen(false);
-                    }}
-                  >
-                    Cerrar Sesión
-                  </Button>
+                  <>
+                    <Link to="/orders" onClick={() => setMobileMenuOpen(false)}>
+                      <Button variant="outline" className="w-full cursor-pointer">
+                        Mis Órdenes
+                      </Button>
+                    </Link>
+                    <Button 
+                      variant="default" 
+                      className="w-full cursor-pointer"
+                      onClick={() => {
+                        logout();
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      Cerrar Sesión
+                    </Button>
+                  </>
                 )}
                 <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
                   <Button variant="outline" className="w-full cursor-pointer">
