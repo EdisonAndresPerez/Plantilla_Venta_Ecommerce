@@ -39,7 +39,7 @@ El proyecto sigue una arquitectura modular dividida por dominios lógicos de neg
 
 ```bash
 # 1. Clonar e instalar
-git clone <url-del-repositorio>
+git clone https://github.com/EdisonAndresPerez/Plantilla_Venta_Ecommerce.git
 cd ecomerce-plantilla
 npm install
 
